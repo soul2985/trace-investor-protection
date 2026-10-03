@@ -1,0 +1,264 @@
+/* ==================================================
+   TRACE — Design System & Custom Tokens
+   Colors: Deep Forest, Sage, Warm Cream, Coral, Amber
+   ================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+
+:root {
+  /* Core Brand Palette */
+  --color-deep-forest: #0F1F1A;
+  --color-primary-green: #1F3A32;
+  --color-sage: #AFC3B4;
+  --color-soft-sage: #DCE7DF;
+  --color-warm-cream: #F7F2E9;
+  --color-white: #FFFFFF;
+  --color-warm-surface: #F2EEE5;
+  --color-border: #E4E2DA;
+
+  /* Typography */
+  --color-text-primary: #17201C;
+  --color-text-secondary: #66716B;
+  --color-text-muted: #929A95;
+
+  /* Functional Status Colors (Calm & Informative) */
+  --color-high-risk: #D97762;
+  --color-high-risk-bg: #FBE4DE;
+  --color-warning: #D4A34A;
+  --color-warning-bg: #F8EBCF;
+  --color-success: #4F806B;
+  --color-success-bg: #E4EFE9;
+  --color-info: #5B8FB9;
+  --color-info-bg: #E7F0F7;
+
+  /* Border Radii */
+  --radius-card-lg: 24px;
+  --radius-card-md: 18px;
+  --radius-card-sm: 14px;
+  --radius-btn: 16px;
+  --radius-input: 18px;
+
+  /* Shadows */
+  --shadow-subtle: 0 8px 30px rgba(15, 31, 26, 0.06);
+  --shadow-card: 0 4px 20px rgba(15, 31, 26, 0.04);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans Devanagari', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--color-warm-cream);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+/* App Container - Centered on desktop, full on mobile */
+.app-viewport {
+  width: 100%;
+  max-width: 440px;
+  min-height: 100vh;
+  background-color: var(--color-warm-cream);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 0 50px rgba(15, 31, 26, 0.08);
+}
+
+@media (min-width: 768px) {
+  .app-viewport {
+    min-height: 94vh;
+    margin: 3vh auto;
+    border-radius: 36px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+  }
+}
+
+/* Common Card Styling */
+.card-lg {
+  border-radius: var(--radius-card-lg);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+.card-md {
+  border-radius: var(--radius-card-md);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+/* Buttons */
+.btn-forest {
+  background-color: var(--color-deep-forest);
+  color: var(--color-white);
+  border-radius: var(--radius-btn);
+  padding: 15px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 52px;
+  transition: all 0.2s ease-out;
+  width: 100%;
+}
+
+.btn-forest:hover {
+  background-color: var(--color-primary-green);
+  transform: translateY(-1px);
+}
+
+.btn-forest:active {
+  transform: translateY(0);
+}
+
+.btn-surface {
+  background-color: var(--color-white);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  padding: 13px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease-out;
+}
+
+.btn-surface:hover {
+  background-color: var(--color-warm-surface);
+  border-color: #D3CFCA;
+}
+
+/* Action Pill Buttons (Upload, Camera, Speak, Link) */
+.action-pill-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 6px;
+  border-radius: var(--radius-card-sm);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease-out;
+}
+
+.action-pill-btn:hover {
+  background-color: var(--color-warm-surface);
+  color: var(--color-deep-forest);
+  border-color: #D4D1C8;
+}
+
+/* Highlighting Suspicious Phrases */
+mark.highlight-phrase {
+  background-color: #F8EBCF;
+  color: #7A5314;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: underline dotted #D4A34A;
+}
+
+/* Subtle Animation for Circular Glow in Analysis Screen */
+@keyframes ring-glow {
+  0% { transform: scale(0.96); opacity: 0.6; }
+  50% { transform: scale(1.04); opacity: 0.95; }
+  100% { transform: scale(0.96); opacity: 0.6; }
+}
+
+.glowing-ring {
+  animation: ring-glow 2.4s infinite ease-in-out;
+}
+
+/* Custom Select Dropdown */
+.lang-select-wrapper {
+  position: relative;
+}
+
+.lang-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 6px 28px 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.lang-select:focus {
+  border-color: var(--color-primary-green);
+}
+
+/* Bottom Navigation Bar */
+.bottom-nav {
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-border);
+  padding: 8px 16px 12px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--color-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  background: none;
+  border: none;
+}
+
+.bottom-nav-item.active,
+.bottom-nav-item:hover {
+  color: var(--color-deep-forest);
+}
+
+.bottom-nav-item.active i {
+  color: var(--color-deep-forest);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8D4CC;
+  border-radius: 4px;
+}

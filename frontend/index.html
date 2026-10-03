@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TRACE — Investor Scam & Claim Verifier</title>
+  <link rel="manifest" href="/static/manifest.json">
+  <link rel="icon" type="image/png" href="/static/assets/logo.png">
+  <meta name="theme-color" content="#0F1F1A">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Tesseract.js for in-browser OCR -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <!-- Custom Design Tokens -->
+  <link rel="stylesheet" href="/static/styles.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: '#0F1F1A',
+            forestGreen: '#1F3A32',
+            sage: '#AFC3B4',
+            softSage: '#DCE7DF',
+            cream: '#F7F2E9',
+            warmSurface: '#F2EEE5',
+            borderCustom: '#E4E2DA',
+            textPrimary: '#17201C',
+            textSecondary: '#66716B',
+            textMuted: '#929A95',
+            highRisk: '#D97762',
+            highRiskBg: '#FBE4DE',
+            warningColor: '#D4A34A',
+            warningBg: '#F8EBCF',
+            successColor: '#4F806B',
+            successBg: '#E4EFE9',
+            infoColor: '#5B8FB9',
+            infoBg: '#E7F0F7'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <div class="app-viewport flex flex-col justify-between">
+    
+    <!-- ================= NAVBAR ================= -->
+    <header class="px-5 py-3.5 flex items-center justify-between sticky top-0 z-30 bg-[#F7F2E9]/90 backdrop-blur-md border-b border-[#E4E2DA]">
+      <div class="flex items-center gap-2.5">
+        <!-- Back button (visible on non-home screens) -->
+        <button id="nav-back-btn" onclick="handleBackNavigation()" class="hidden p-1 -ml-1 text-[#17201C] hover:text-[#0F1F1A]">
+          <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </button>
+        <!-- Logo & Title -->
+        <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('input')">
+          <img src="/static/assets/logo.png" alt="TRACE Logo" class="w-7 h-7 object-contain rounded-md shadow-sm">
+          <span class="font-bold text-sm tracking-wider text-[#0F1F1A] font-sans">TRACE</span>
+        </div>
+      </div>
+
+      <!-- Right actions: Share + Language Dropdown -->
+      <div class="flex items-center gap-2.5">
+        <!-- Share button on Result / Details screens -->
+        <button id="nav-share-btn" onclick="openShareModal()" class="hidden p-1 text-[#66716B] hover:text-[#0F1F1A]" title="Share">
+          <i data-lucide="share-2" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Dropdown Language Selector -->
+        <div class="lang-select-wrapper">
+          <select id="lang-dropdown" onchange="changeLanguage(this.value)" class="lang-select">
+            <option value="en">EN</option>
+            <option value="hi">हिन्दी</option>
+            <option value="mr">मराठी</option>
+          </select>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"></i>
+        </div>
+      </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT VIEWS ================= -->
+    <main class="flex-1 p-5 overflow-y-auto">
+
+      <!-- ================= 01 INPUT SCREEN ================= -->
+      <section id="screen-input" class="space-y-5">
+        <div class="space-y-1 pt-1">
+          <h1 id="txt-input-title" class="text-2xl font-bold text-[#0F1F1A] leading-tight">What did you receive?</h1>
+          <p id="txt-input-sub" class="text-xs text-[#66716B] leading-relaxed">Paste the message, upload a screenshot or speak it. We'll check for warning signs.</p>
+        </div>
+
+        <!-- Main Input Card (24px radius, subtle border) -->
+        <div class="card-lg p-4 bg-white space-y-3">
+          <textarea id="message-input" rows="6" placeholder="Paste message here..." oninput="updateCharCount()" class="w-full text-sm text-[#17201C] placeholder-[#929A95] bg-transparent outline-none resize-none leading-relaxed"></textarea>
+          <div class="flex items-center justify-between pt-2 border-t border-[#F2EEE5] text-[11px] text-[#929A95]">
+            <span id="char-counter">0/5000</span>
+            <button onclick="clearInput()" class="hover:text-[#66716B] transition">Clear</button>
+          </div>
+        </div>
+
+        <!-- Hidden File Inputs for Upload & Camera -->
+        <input type="file" id="file-picker" accept="image/*" class="hidden" onchange="handleFileSelect(event)">
+        <input type="file" id="camera-picker" accept="image/*" capture="environment" class="hidden" onchange="handleFileSelect(event)">
+
+        <!-- 4 Compact Actions (Upload, Camera, Speak, Link) -->
+        <div class="grid grid-cols-4 gap-2.5">
+          <button onclick="triggerFilePicker()" class="action-pill-btn">
+            <i data-lucide="upload" class="w-4 h-4 text-[#1F3A32]"></i>
+            <span id="txt-action-upload">Upload</span>
+          </button>
+          <button onclick="triggerCameraPicker()" class="action-pill-btn">
+            <i data-lucide="camera" class="w-4 h-4 text-[#1F3A32]"></i>
+            <span id="txt-action-camera">Camera</span>
+          </button>
+          <button id="btn-speak-action" onclick="toggleSpeechInput()" class="action-pill-btn">
+            <i id="icon-mic" data-lucide="mic" class="w-4 h-4 text-[#1F3A32]"></i>
+            <span id="txt-action-speak">Speak</span>
+          </button>
+          <button onclick="promptLinkInput()" class="action-pill-btn">
+            <i data-lucide="link" class="w-4 h-4 text-[#1F3A32]"></i>
+            <span id="txt-action-link">Link</span>
+          </button>
+        </div>
+
+        <!-- OCR / Speech Status Banner -->
+        <div id="status-banner" class="hidden p-3 rounded-xl bg-[#E4EFE9] text-[#1F3A32] text-xs flex items-center gap-2">
+          <div class="w-3.5 h-3.5 border-2 border-[#1F3A32] border-t-transparent rounded-full animate-spin"></div>
+          <span id="status-banner-text">Processing...</span>
+        </div>
+
+        <!-- Primary CTA: Check Now -->
+        <button id="btn-check-now" onclick="submitAnalysis()" class="btn-forest">
+          <span id="txt-check-now">Check now</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+
+        <!-- Privacy Assurance -->
+        <div class="flex items-center justify-center gap-1.5 text-xs text-[#66716B] pt-2">
+          <i data-lucide="lock" class="w-3.5 h-3.5 text-[#929A95]"></i>
+          <span id="txt-privacy-foot">Your message is not stored.</span>
+        </div>
+      </section>
+
+
+      <!-- ================= 02 ANALYSING SCREEN ================= -->
+      <section id="screen-analysing" class="hidden space-y-6 pt-2">
+        <div class="space-y-1">
+          <h2 id="txt-analysing-title" class="text-2xl font-bold text-[#0F1F1A]">Analysing your message...</h2>
+          <p id="txt-analysing-sub" class="text-xs text-[#66716B]">We're checking for warning signs and verifying key details. This usually takes a few seconds.</p>
+        </div>
+
+        <!-- Glowing Circular Logo Badge -->
+        <div class="py-6 flex justify-center">
+          <div class="w-36 h-36 rounded-full bg-[#E4EFE9]/50 flex items-center justify-center relative glowing-ring p-3">
+            <div class="w-28 h-28 rounded-full bg-[#DCE7DF]/70 flex items-center justify-center p-3 shadow-inner">
+              <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center shadow-md p-2">
+                <img src="/static/assets/logo.png" alt="TRACE" class="w-12 h-12 object-contain">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simple Elegant Progress Checklist -->
+        <div class="card-md p-5 bg-white space-y-3.5">
+          <div id="chk-step-1" class="flex items-center gap-3 text-xs font-semibold text-[#17201C]">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-[#4F806B]"></i>
+            <span id="txt-chk-1">Reading message</span>
+          </div>
+          <div id="chk-step-2" class="flex items-center gap-3 text-xs font-semibold text-[#17201C]">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-[#4F806B]"></i>
+            <span id="txt-chk-2">Extracting key details</span>
+          </div>
+          <div id="chk-step-3" class="flex items-center gap-3 text-xs font-medium text-[#66716B]">
+            <i data-lucide="circle" class="w-4 h-4 text-[#AFC3B4]"></i>
+            <span id="txt-chk-3">Checking SEBI records</span>
+          </div>
+          <div id="chk-step-4" class="flex items-center gap-3 text-xs font-medium text-[#66716B]">
+            <i data-lucide="circle" class="w-4 h-4 text-[#AFC3B4]"></i>
+            <span id="txt-chk-4">Scanning for warning signs</span>
+          </div>
+          <div id="chk-step-5" class="flex items-center gap-3 text-xs font-medium text-[#66716B]">
+            <i data-lucide="circle" class="w-4 h-4 text-[#AFC3B4]"></i>
+            <span id="txt-chk-5">Analysing with AI</span>
+          </div>
+          <div id="chk-step-6" class="flex items-center gap-3 text-xs font-medium text-[#66716B]">
+            <i data-lucide="circle" class="w-4 h-4 text-[#AFC3B4]"></i>
+            <span id="txt-chk-6">Preparing your result</span>
+          </div>
+        </div>
+
+        <!-- "Did You Know?" Tip Card -->
+        <div class="p-4 rounded-2xl bg-[#F8EBCF]/60 border border-[#E4E2DA] flex gap-3 items-start">
+          <div class="w-7 h-7 rounded-full bg-[#D4A34A]/20 flex items-center justify-center flex-shrink-0 text-[#D4A34A] mt-0.5">
+            <i data-lucide="lightbulb" class="w-4 h-4"></i>
+          </div>
+          <div>
+            <h4 id="txt-tip-title" class="font-bold text-xs text-[#0F1F1A]">Did you know?</h4>
+            <p id="txt-tip-desc" class="text-xs text-[#66716B] mt-0.5 leading-relaxed">Many investment scams use fake or stolen SEBI registration numbers to look genuine.</p>
+          </div>
+        </div>
+      </section>
+
+
+      <!-- ================= 03 RESULT SCREEN ================= -->
+      <section id="screen-result" class="hidden space-y-4">
+        
+        <!-- Main Risk Card (Coral for High Risk, Amber for Medium, Green for Low, Slate for Can't Tell) -->
+        <div id="risk-result-card" class="card-lg p-5 border space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shadow-sm" id="risk-icon-circle">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+            <span id="result-confidence-pill" class="text-xs font-bold px-3 py-1 rounded-full">87% Confidence</span>
+          </div>
+          
+          <div>
+            <h2 id="result-risk-title" class="text-2xl font-bold leading-tight">High Risk</h2>
+            <p id="result-risk-sub" class="text-xs text-[#66716B] mt-1 leading-relaxed">This message shows several warning signs of a potential scam.</p>
+          </div>
+        </div>
+
+        <!-- Quick Summary Card -->
+        <div class="card-md p-4 bg-white space-y-1.5">
+          <h3 id="txt-quick-summary-title" class="text-xs font-bold uppercase tracking-wider text-[#0F1F1A]">Quick Summary</h3>
+          <p id="result-quick-summary-text" class="text-xs text-[#66716B] leading-relaxed"></p>
+        </div>
+
+        <!-- Key Warning Signs Card -->
+        <div class="card-md p-4 bg-white space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 id="txt-warning-signs-title" class="text-xs font-bold uppercase tracking-wider text-[#0F1F1A]">Key Warning Signs</h3>
+            <span id="result-warning-count" class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#FBE4DE] text-[#D97762]">0 found</span>
+          </div>
+
+          <div id="result-warning-list" class="space-y-2.5">
+            <!-- Dynamic warning items -->
+          </div>
+        </div>
+
+        <!-- Primary CTA: See Full Details -->
+        <div class="space-y-2 pt-1">
+          <button onclick="navigateTo('details')" class="btn-forest">
+            <span id="txt-btn-see-details">See full details</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="navigateTo('action')" class="btn-surface w-full">
+            <span id="txt-btn-next-steps">What should you do now?</span>
+          </button>
+        </div>
+      </section>
+
+
+      <!-- ================= 04 DETAILS SCREEN ================= -->
+      <section id="screen-details" class="hidden space-y-4">
+        
+        <div class="space-y-1">
+          <h2 id="txt-details-title" class="text-2xl font-bold text-[#0F1F1A]">Your message</h2>
+          <p id="txt-details-sub" class="text-xs text-[#66716B]">We highlighted the parts that look suspicious.</p>
+        </div>
+
+        <!-- Highlighted Original Message Box -->
+        <div class="card-md p-4 bg-white space-y-2">
+          <div class="flex items-center justify-between text-xs text-[#929A95] border-b border-[#F2EEE5] pb-2">
+            <span>Original Text</span>
+            <button onclick="copyOriginalMessage()" class="flex items-center gap-1 text-[#1F3A32] font-semibold hover:underline">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy
+            </button>
+          </div>
+          <div id="details-highlighted-box" class="text-xs leading-relaxed text-[#17201C] whitespace-pre-wrap font-sans"></div>
+        </div>
+
+        <!-- Extracted Details Section -->
+        <div class="card-md p-4 bg-white space-y-3">
+          <h3 id="txt-extracted-details-title" class="text-xs font-bold uppercase tracking-wider text-[#0F1F1A]">Extracted details</h3>
+          <div id="extracted-details-list" class="space-y-2 text-xs">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Embedded SEBI Verification Card -->
+        <div class="card-md p-4 bg-white space-y-3 border-l-4 border-l-[#4F806B]">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-[#E4EFE9] text-[#4F806B] flex items-center justify-center">
+                <i data-lucide="landmark" class="w-4 h-4"></i>
+              </div>
+              <h4 class="font-bold text-xs text-[#0F1F1A]">SEBI Verification</h4>
+            </div>
+            <span id="details-sebi-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">STATUS</span>
+          </div>
+
+          <div id="details-sebi-info" class="text-xs text-[#66716B] space-y-1">
+            <!-- Populated via JS -->
+          </div>
+
+          <a href="https://www.sebi.gov.in" target="_blank" class="inline-flex items-center gap-1 text-xs font-semibold text-[#1F3A32] hover:underline pt-1">
+            <span>Check on SEBI's official website</span>
+            <i data-lucide="external-link" class="w-3 h-3"></i>
+          </a>
+        </div>
+
+        <!-- Primary CTA: Next to Action Screen -->
+        <button onclick="navigateTo('action')" class="btn-forest">
+          <span id="txt-btn-to-action">What should you do now?</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </section>
+
+
+      <!-- ================= 05 ACTION SCREEN ================= -->
+      <section id="screen-action" class="hidden space-y-4">
+        
+        <div class="space-y-1">
+          <h2 id="txt-action-title" class="text-2xl font-bold text-[#0F1F1A]">What should you do now?</h2>
+          <p id="txt-action-sub" class="text-xs text-[#66716B]">Follow these steps to stay safe.</p>
+        </div>
+
+        <!-- Vertical Sequence: 5 Numbered Action Steps -->
+        <div class="space-y-2.5">
+          
+          <!-- Step 1 -->
+          <div class="card-md p-3.5 bg-white flex gap-3 items-start">
+            <div class="w-6 h-6 rounded-full bg-[#FBE4DE] text-[#D97762] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">1</div>
+            <div>
+              <h4 id="txt-step1-title" class="font-bold text-xs text-[#0F1F1A]">Do not transfer money</h4>
+              <p id="txt-step1-desc" class="text-xs text-[#66716B] mt-0.5">Avoid sending money, paying verification fees, or sharing UPI details.</p>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="card-md p-3.5 bg-white flex gap-3 items-start">
+            <div class="w-6 h-6 rounded-full bg-[#F8EBCF] text-[#D4A34A] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">2</div>
+            <div>
+              <h4 id="txt-step2-title" class="font-bold text-xs text-[#0F1F1A]">Do not install the app</h4>
+              <p id="txt-step2-desc" class="text-xs text-[#66716B] mt-0.5">Do not download or install any unknown APK or grant screen-sharing permission.</p>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="card-md p-3.5 bg-white flex gap-3 items-start">
+            <div class="w-6 h-6 rounded-full bg-[#E4EFE9] text-[#4F806B] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">3</div>
+            <div>
+              <h4 id="txt-step3-title" class="font-bold text-xs text-[#0F1F1A]">Verify independently</h4>
+              <p id="txt-step3-desc" class="text-xs text-[#66716B] mt-0.5">Check the person or firm on SEBI's official website (sebi.gov.in).</p>
+            </div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="card-md p-3.5 bg-white flex gap-3 items-start">
+            <div class="w-6 h-6 rounded-full bg-[#E7F0F7] text-[#5B8FB9] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">4</div>
+            <div>
+              <h4 id="txt-step4-title" class="font-bold text-xs text-[#0F1F1A]">Report if needed</h4>
+              <p id="txt-step4-desc" class="text-xs text-[#66716B] mt-0.5">Report this message on cybercrime.gov.in or call helpline 1930.</p>
+            </div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="card-md p-3.5 bg-white flex gap-3 items-start">
+            <div class="w-6 h-6 rounded-full bg-[#E7F0F7] text-[#5B8FB9] font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5">5</div>
+            <div>
+              <h4 id="txt-step5-title" class="font-bold text-xs text-[#0F1F1A]">Share with family</h4>
+              <p id="txt-step5-desc" class="text-xs text-[#66716B] mt-0.5">Let your family know about this message to prevent them from falling for it.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="space-y-2 pt-2">
+          <button onclick="navigateTo('recovery')" class="btn-forest">
+            <span id="txt-btn-open-reporting">Open reporting guide</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="openShareModal()" class="btn-surface">
+              <i data-lucide="share-2" class="w-4 h-4 text-[#1F3A32]"></i>
+              <span>Share Summary</span>
+            </button>
+            <button onclick="navigateTo('input')" class="btn-surface">
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-[#1F3A32]"></i>
+              <span>Check Another</span>
+            </button>
+          </div>
+        </div>
+
+      </section>
+
+
+      <!-- ================= 08 ALREADY PAID? (RECOVERY GUIDE) ================= -->
+      <section id="screen-recovery" class="hidden space-y-4">
+        
+        <div class="card-lg p-5 bg-[#FBE4DE] border border-[#D97762]/30 space-y-2 text-center">
+          <div class="w-10 h-10 rounded-full bg-white text-[#D97762] flex items-center justify-center mx-auto shadow-sm">
+            <i data-lucide="life-buoy" class="w-5 h-5"></i>
+          </div>
+          <h2 id="txt-recovery-title" class="text-xl font-bold text-[#0F1F1A]">Already paid?</h2>
+          <p id="txt-recovery-sub" class="text-xs text-[#66716B]">Take action quickly. The golden hour response can freeze recipient accounts.</p>
+        </div>
+
+        <!-- 4 Emergency Recovery Actions -->
+        <div class="space-y-2.5 text-xs">
+          
+          <div class="card-md p-4 bg-white flex items-center justify-between border-l-4 border-l-[#D97762]">
+            <div>
+              <h4 class="font-bold text-[#0F1F1A]">1. Call 1930 Helpline</h4>
+              <p class="text-[#66716B] mt-0.5">National Cyber Crime Reporting Helpline</p>
+            </div>
+            <a href="tel:1930" class="px-3 py-1.5 rounded-xl bg-[#D97762] text-white font-bold text-xs flex items-center gap-1 shadow-sm">
+              <i data-lucide="phone" class="w-3.5 h-3.5"></i> 1930
+            </a>
+          </div>
+
+          <div class="card-md p-4 bg-white border-l-4 border-l-[#D4A34A]">
+            <h4 class="font-bold text-[#0F1F1A]">2. Contact Your Bank Immediately</h4>
+            <p class="text-[#66716B] mt-0.5">Call your bank's fraud helpline to raise a recall request / freeze transaction.</p>
+          </div>
+
+          <div class="card-md p-4 bg-white flex items-center justify-between border-l-4 border-l-[#5B8FB9]">
+            <div>
+              <h4 class="font-bold text-[#0F1F1A]">3. Report on cybercrime.gov.in</h4>
+              <p class="text-[#66716B] mt-0.5">Submit formal complaint with transaction UTR numbers</p>
+            </div>
+            <a href="https://cybercrime.gov.in" target="_blank" class="text-xs font-bold text-[#1F3A32] underline">Visit</a>
+          </div>
+
+          <div class="card-md p-4 bg-white border-l-4 border-l-[#4F806B]">
+            <h4 class="font-bold text-[#0F1F1A]">4. Preserve Evidence</h4>
+            <p class="text-[#66716B] mt-0.5">Keep chat screenshots, phone numbers, payment receipts, and bank SMS.</p>
+          </div>
+
+        </div>
+
+        <!-- Pre-filled Formal Complaint Draft -->
+        <div class="card-md p-4 bg-white space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-bold text-[#0F1F1A] uppercase tracking-wider">Complaint Draft</h4>
+            <button onclick="copyComplaintText()" class="text-xs font-semibold text-[#1F3A32] hover:underline flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5"></i> Copy Letter
+            </button>
+          </div>
+          <textarea id="recovery-complaint-draft" rows="5" readonly class="w-full p-2.5 text-xs bg-[#F7F2E9] rounded-xl text-[#17201C] font-mono outline-none border border-[#E4E2DA]"></textarea>
+        </div>
+
+        <button onclick="navigateTo('action')" class="btn-surface w-full">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Safety Steps
+        </button>
+
+      </section>
+
+    </main>
+
+
+    <!-- ================= BOTTOM NAVIGATION BAR ================= -->
+    <nav class="bottom-nav">
+      <button id="bnav-check" onclick="navigateTo('input')" class="bottom-nav-item active">
+        <i data-lucide="shield-check" class="w-5 h-5"></i>
+        <span>Check</span>
+      </button>
+      <button id="bnav-history" onclick="openHistoryModal()" class="bottom-nav-item">
+        <i data-lucide="clock" class="w-5 h-5"></i>
+        <span>History</span>
+      </button>
+      <button id="bnav-help" onclick="openHelpModal()" class="bottom-nav-item">
+        <i data-lucide="help-circle" class="w-5 h-5"></i>
+        <span>Help</span>
+      </button>
+      <button id="bnav-settings" onclick="openSettingsModal()" class="bottom-nav-item">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+
+    <!-- ================= 09 SHARE WITH FAMILY MODAL ================= -->
+    <div id="modal-share" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="card-lg bg-white max-w-sm w-full p-5 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between border-b border-[#F2EEE5] pb-2.5">
+          <div class="flex items-center gap-2">
+            <img src="/static/assets/logo.png" alt="TRACE" class="w-5 h-5 object-contain">
+            <h3 class="font-bold text-sm text-[#0F1F1A]">Share with family</h3>
+          </div>
+          <button onclick="closeShareModal()" class="text-gray-400 hover:text-gray-600">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <p class="text-xs text-[#66716B]">Share a simple safety summary with someone you trust. No sensitive message details are included.</p>
+
+        <!-- Preview Card -->
+        <div id="share-card-preview" class="p-4 rounded-2xl bg-[#F7F2E9] border border-[#E4E2DA] space-y-2 text-xs text-[#17201C]">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Sharing Options -->
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button onclick="shareViaWhatsApp()" class="btn-forest py-2.5 text-xs bg-[#1F3A32]">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+          </button>
+          <button onclick="copyShareText()" class="btn-surface py-2.5 text-xs">
+            <i data-lucide="copy" class="w-4 h-4"></i> Copy Summary
+          </button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================= HISTORY MODAL ================= -->
+    <div id="modal-history" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="card-lg bg-white max-w-sm w-full p-5 space-y-4 shadow-xl max-h-[80vh] flex flex-col">
+        <div class="flex items-center justify-between border-b border-[#F2EEE5] pb-2.5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-[#1F3A32]"></i>
+            <h3 class="font-bold text-sm text-[#0F1F1A]">Recent Checks</h3>
+          </div>
+          <button onclick="closeHistoryModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div id="history-items-container" class="flex-1 overflow-y-auto space-y-2 text-xs pr-1">
+          <!-- Populated via JS -->
+        </div>
+        <div class="flex justify-between items-center pt-2 border-t border-[#F2EEE5]">
+          <button onclick="clearHistory()" class="text-xs text-[#D97762] hover:underline">Clear History</button>
+          <button onclick="closeHistoryModal()" class="text-xs font-semibold text-[#1F3A32]">Close</button>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ================= HELP MODAL ================= -->
+    <div id="modal-help" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="card-lg bg-white max-w-sm w-full p-5 space-y-4 shadow-xl max-h-[80vh] flex flex-col">
+        <div class="flex items-center justify-between border-b border-[#F2EEE5] pb-2.5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="help-circle" class="w-4 h-4 text-[#1F3A32]"></i>
+            <h3 class="font-bold text-sm text-[#0F1F1A]">About TRACE</h3>
+          </div>
+          <button onclick="closeHelpModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="flex-1 overflow-y-auto space-y-3 text-xs text-[#66716B] leading-relaxed pr-1">
+          <p><strong>What is TRACE?</strong><br>TRACE is an independent investor-safety verification tool created to protect ordinary citizens against financial scams and fraudulent investment claims.</p>
+          <p><strong>SEBI Snapshot Verification:</strong><br>TRACE matches claimed registration numbers against an authentic database of 3,321 verified Investment Advisers and Research Analysts as of October 03, 2026.</p>
+          <p><strong>Emergency Contact:</strong><br>If you have been scammed or transferred money, immediately dial <strong>1930</strong> (National Cybercrime Reporting Portal) or visit cybercrime.gov.in.</p>
+        </div>
+        <button onclick="closeHelpModal()" class="btn-forest py-2.5 text-xs">Got it</button>
+      </div>
+    </div>
+
+
+    <!-- ================= SETTINGS MODAL ================= -->
+    <div id="modal-settings" class="fixed inset-0 bg-black/40 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+      <div class="card-lg bg-white max-w-sm w-full p-5 space-y-4 shadow-xl">
+        <div class="flex items-center justify-between border-b border-[#F2EEE5] pb-2.5">
+          <div class="flex items-center gap-2">
+            <i data-lucide="settings" class="w-4 h-4 text-[#1F3A32]"></i>
+            <h3 class="font-bold text-sm text-[#0F1F1A]">Settings</h3>
+          </div>
+          <button onclick="closeSettingsModal()" class="text-gray-400 hover:text-gray-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <div class="space-y-3 text-xs text-[#17201C]">
+          <div class="flex items-center justify-between py-1">
+            <span>Primary Language</span>
+            <span id="settings-lang-label" class="font-semibold text-[#1F3A32]">English</span>
+          </div>
+          <div class="flex items-center justify-between py-1">
+            <span>SEBI Snapshot Version</span>
+            <span class="text-[#66716B]">Oct 03, 2026</span>
+          </div>
+          <div class="flex items-center justify-between py-1">
+            <span>Privacy Guarantee</span>
+            <span class="text-[#4F806B] font-semibold">Zero Storage</span>
+          </div>
+        </div>
+        <button onclick="closeSettingsModal()" class="btn-surface w-full py-2.5 text-xs">Done</button>
+      </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-16 left-1/2 -translate-x-1/2 px-4 py-2 bg-[#0F1F1A] text-white text-xs font-semibold rounded-full shadow-lg opacity-0 transition-opacity pointer-events-none z-50">
+      Notification
+    </div>
+
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

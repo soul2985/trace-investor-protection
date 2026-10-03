@@ -1,0 +1,211 @@
+{
+  "rules": [
+    {
+      "id": "guaranteed_returns",
+      "name": "Guaranteed / Assured Returns",
+      "weight": 35,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(guarantee|guarantees|guaranteed|guaranteeing|assured|assures|sure shot|100% safe|no loss|no risk|fixed return|fixed monthly income|guarantee profit|guaranteed-return|zero chance of loss|completely safe with us|without any market risk)\\b",
+        "(?i)(गारंटीड|खात्रीशीर|पक्का मुनाफा|नक्की परतावा|शंभर टक्के सुरक्षित|नुकसान नाही|कोणताही धोका नाही|पक्का रिटर्न|नक्की नफा)",
+        "(?i)\\b(pakka return|100% pakka|zero risk|no risk)\\b"
+      ],
+      "negations": [
+        "(?i)\\b(not|never|no|doesn't|does not|cannot|isn't)\\s+(guaranteed|assured|safe)\\b",
+        "(?i)\\b(returns? (are|is)? not guaranteed)\\b",
+        "(?i)\\b(past performance does not guarantee)\\b",
+        "(?i)(गारंटीड नाही|खात्री नाही|जोखीम आहे|जोखिमों के अधीन)"
+      ],
+      "explanations": {
+        "en": "Promises of guaranteed, fixed, or risk-free profits are a major warning sign. Legitimate market investments never guarantee returns.",
+        "hi": "गारंटीड, निश्चित या बिना जोखिम के मुनाफे का वादा एक बड़ा चेतावनी संकेत है। वैध शेयर बाजार निवेश कभी भी गारंटीड रिटर्न का वादा नहीं करते।",
+        "mr": "नक्की, खात्रीशीर किंवा विना-धोका नफ्याचे आश्वासन देणे हा एक मोठा धोक्याचा इशारा आहे. अधिकृत बाजार गुंतवणुकीत परताव्याची कोणतीही हमी नसते."
+      }
+    },
+    {
+      "id": "unrealistic_returns",
+      "name": "Unrealistic Return Claims",
+      "weight": 30,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(\\d{1,3}%\\s*(?:returns?|profit)?\\s*(monthly|daily|weekly|every month|every week|per month|this week))\\b",
+        "(?i)\\b(double (your )?investment in \\d+ days)\\b",
+        "(?i)\\b(turn ₹?[\\d,]+ into ₹?[\\d,]+(?:\\s*lakh)?)\\b",
+        "(?i)\\b(earn ₹?[\\d,]+ (daily|per day|every single day))\\b",
+        "(?i)\\b(9[5-9]% success rate)\\b",
+        "(?i)\\b(huge profits|guaranteed daily stock profits)\\b",
+        "(?i)(\\d+ दिवसात दुप्पट|दररोज ₹?[\\d,]+ कमवा|\\d{2}% दरमहा|दरमहा \\d{2}%)",
+        "(?i)(\\d+ दिनों में दोगुना|हर दिन ₹?[\\d,]+ कमाएं|\\d{2}% मासिक रिटर्न)"
+      ],
+      "negations": [
+        "(?i)\\b(not|unlikely|cannot|does not)\\s+(promise|give|offer)\\b"
+      ],
+      "explanations": {
+        "en": "Unusually high percentage returns (such as 30-40% monthly or doubling money in 45-60 days) are typical hallmarks of Ponzi or fraudulent schemes.",
+        "hi": "असामान्य रूप से उच्च रिटर्न (जैसे 30-40% प्रति माह या कुछ ही दिनों में पैसा दोगुना करना) पोंजी या धोखाधड़ी योजनाओं के विशिष्ट लक्षण हैं।",
+        "mr": "अवाजवी मोठा परतावा (जसे दरमहा ३०-४०% किंवा काही दिवसांत पैसे दुप्पट करणे) ही फसव्या योजनांची मुख्य लक्षणे आहेत."
+      }
+    },
+    {
+      "id": "fake_sebi_claim",
+      "name": "Misuse of SEBI Registration Claim",
+      "weight": 30,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(sebi[- ]registered|sebi[- ]approved|sebi[- ]backed|authorized (by )?sebi|connections? with sebi|official sebi|approved by financial authorities|sebi registration gives us access|use my registration number to verify us|sebi authorized)\\b",
+        "(?i)(सेबी मान्यताप्राप्त|सेबी रजिस्टर्ड|सेबी प्रमाणित|सेबीचे अधिकृत|सेबी नोंदणीकृत)",
+        "(?i)\\b(sebi approved hai|sebi registered hu|sebi analyst)\\b"
+      ],
+      "negations": [
+        "(?i)\\b(registered with sebi as.*investments? (are|is) subject to)\\b",
+        "(?i)\\b(sebi does not guarantee|sebi does not endorse|check on sebi|sebi cautions|sebi advisory)\\b"
+      ],
+      "explanations": {
+        "en": "The message uses claims of SEBI approval or connection to induce trust. SEBI never backs guaranteed-return schemes or private trading advice.",
+        "hi": "संदेश भरोसा जीतने के लिए सेबी (SEBI) के नाम या पंजीकरण का उपयोग कर रहा है। सेबी कभी भी गारंटीड मुनाफे वाली योजनाओं का समर्थन नहीं करता।",
+        "mr": "विश्वास संपादन करण्यासाठी संदेशात सेबीच्या (SEBI) नावाचा गैरवापर केला जात आहे. सेबी कधीही कोणत्याही परताव्याची किंवा योजनेची हमी देत नाही."
+      }
+    },
+    {
+      "id": "urgency_pressure",
+      "name": "Artificial Urgency & Pressure",
+      "weight": 20,
+      "severity": "medium",
+      "patterns": [
+        "(?i)\\b((?:only )?\\d+ slots? (?:remaining|left|available)|limited slots(?: available)?|within the next \\d+ minutes|expires tonight|invest before \\d+|final warning|transfer .* immediately|don't waste time asking questions|act immediately|pay now|one-time opportunity|cannot hold your position|window closes|before .* closes)\\b",
+        "(?i)(फक्त \\d+ जागा शिल्लक|पुढील \\d+ मिनिटांत|आज रात्री संपेल|त्वरित पैसे पाठवा|आताच भरा|वेळ वाया घालवू नका|लगेच पैसे पाठवा)",
+        "(?i)(केवल \\d+ सीटें बाकी|अगले \\d+ मिनट में|आज ही मौका है|तुरंत ट्रांसफर करें|जल्दी करो|समय मत गंवाओ)"
+      ],
+      "negations": [],
+      "explanations": {
+        "en": "Scammers create false urgency (e.g. '15 minutes left', 'pay now') to panic you into transferring funds before you have time to think or verify.",
+        "hi": "धोखेबाज झूठी जल्दबाजी (जैसे '15 मिनट बचे हैं', 'तुरंत भुगतान करें') पैदा करते हैं ताकि आप सोचने या जांच करने से पहले पैसे भेज दें।",
+        "mr": "फसवणूक करणारे खोटी घाई (उदा. '१५ मिनिटे शिल्लक', 'आताच पैसे पाठवा') निर्माण करतात जेणेकरून विचार करायला वेळ मिळणार नाही."
+      }
+    },
+    {
+      "id": "private_group",
+      "name": "Private VIP / Telegram Group Invitations",
+      "weight": 20,
+      "severity": "medium",
+      "patterns": [
+        "(?i)\\b(exclusive telegram|whatsapp vip group|private trading community|strictly confidential|join our premium telegram|send 'join' now|only selected investors can join|private investment group|exclusive signals|t\\.me/|chat\\.whatsapp\\.com/)\\b",
+        "(?i)(खास टेलिग्राम ग्रुप|व्हीआयपी व्हॉट्सअ‍ॅप|गुप्त ग्रुप|प्रायव्हेट ग्रुपमध्ये सामील व्हा|टेलिग्राम ग्रुपमध्ये सामील व्हा|टेलिग्राम ग्रुप)",
+        "(?i)(वीआईपी टेलीग्राम|व्हाट्सएप वीआईपी ग्रुप|प्राइवेट ग्रुप में जुड़ें|सीक्रेट ग्रुप|टेलीग्राम ग्रुप)"
+      ],
+      "negations": [],
+      "explanations": {
+        "en": "Invitation to an exclusive or private Telegram/WhatsApp group where fake trades, bot screenshots, and peer pressure are used to trick victims.",
+        "hi": "किसी एक्सक्लूसिव या प्राइवेट टेलीग्राम/व्हाट्सएप ग्रुप में शामिल होने का निमंत्रण, जहां नकली स्क्रीनशॉट और साथी सदस्यों के झांसे से ठगी की जाती है।",
+        "mr": "खाजगी टेलिग्राम किंवा व्हॉट्सअ‍ॅप ग्रुपमध्ये सामील होण्याचे आमंत्रण, जिथे खोटे स्क्रीनशॉट दाखवून पैसे गुंतवण्यास भाग पाडले जाते."
+      }
+    },
+    {
+      "id": "insider_tip",
+      "name": "Claims of Insider Tips / Confidential Access",
+      "weight": 25,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(insider market calls?|insider network|before the market reacts|insider information|confidential calls?|privileged market access|knows which stocks will rise)\\b",
+        "(?i)(अंदरूनी जानकारी|गुप्त माहिती|बाजार उघडण्यापूर्वी माहिती|इनसाइडर टिप्स)"
+      ],
+      "negations": [],
+      "explanations": {
+        "en": "Claims of 'insider tips' or confidential stock information are illegal and commonly used to lure victims into fraudulent schemes.",
+        "hi": "'इनसाइडर टिप्स' या गोपनीय जानकारी के दावे अवैध हैं और इनका उपयोग निवेशकों को ठगने के लिए किया जाता है।",
+        "mr": "'इनसायडर टिप्स' किंवा गोपनीय माहितीचे दावे बेकायदेशीर असून गुंतवणूकदारांना जाळ्यात ओढण्यासाठी वापरले जातात."
+      }
+    },
+    {
+      "id": "app_install",
+      "name": "Pressure to Install Unknown APK / App",
+      "weight": 35,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(install this apk|private trading app|not available on the play store|download this application|install this app|install our secure|download our private|download this app immediately|verification app)\\b",
+        "(?i)(\\.apk\\b|download.*apk)",
+        "(?i)(एपीके इन्स्टॉल करा|अ‍ॅप डाउनलोड करा|प्ले स्टोअरवर उपलब्ध नाही|हे अ‍ॅप इन्स्टॉल करा|अ‍ॅप इन्स्टॉल)",
+        "(?i)(एपीके इनस्टॉल करें|ऐप डाउनलोड करें|प्ले स्टोर पर नहीं है|प्राइवेट ट्रेडिंग ऐप|ऐप इनस्टॉल)"
+      ],
+      "negations": [
+        "(?i)\\b(download from official (google )?play store|upgrade to official.*app exclusively from google play store)\\b"
+      ],
+      "explanations": {
+        "en": "Asking you to download an app or APK outside official app stores (Google Play) puts your device, bank accounts, and OTPs at extreme risk.",
+        "hi": "आधिकारिक प्ले स्टोर के बाहर किसी ऐप या APK को डाउनलोड करने के लिए कहना आपके बैंक खाते और फोन की सुरक्षा के लिए बेहद खतरनाक है।",
+        "mr": "अधिकृत गुगल प्ले स्टोअरच्या बाहेरून अ‍ॅप किंवा एपीके (APK) डाउनलोड करण्यास सांगणे अत्यंत धोकादायक असून यामुळे बँक खाते रिकामे होऊ शकते."
+      }
+    },
+    {
+      "id": "remote_access",
+      "name": "Screen-Sharing / Remote Access Requests",
+      "weight": 40,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(remote access|screen[- ]sharing|anydesk|teamviewer|rustdesk|remote verification|allow permission)\\b",
+        "(?i)(स्क्रीन शेअर करा|रिमोट अ‍ॅक्सेस द्या|स्क्रीन शेअरिंग)",
+        "(?i)(स्क्रीन शेयर करें|रिमोट एक्सेस दें|स्क्रीन शेयरिंग की अनुमति)"
+      ],
+      "negations": [],
+      "explanations": {
+        "en": "Legitimate financial entities never ask for screen-sharing or remote device access. This allows scammers to view your screen and steal OTPs/PINs.",
+        "hi": "कोई भी वैध वित्तीय संस्था कभी भी स्क्रीन-शेयरिंग या रिमोट एक्सेस की मांग नहीं करती। इससे धोखेबाज आपके ओटीपी और पासवर्ड देख सकते हैं।",
+        "mr": "कोणतीही खरी वित्तीय संस्था स्क्रीन शेअरिंग किंवा रिमोट अ‍ॅक्सेस मागत नाही. यामुळे फसवणूक करणारे तुमचे ओटीपी आणि पासवर्ड चोरू शकतात."
+      }
+    },
+    {
+      "id": "personal_upi",
+      "name": "Personal UPI Transfer Request",
+      "weight": 35,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(personal upi id|manager's upi|transfer .* to .* upi|paytm upi|gpay number|send to this upi|send your upi payment screenshot)\\b",
+        "(?i)\\b([a-zA-Z0-9.\\-_]+@(okhdfcbank|oksbi|okaxis|okicici|paytm|ybl|axl|upi|apl|ibl|barodampay))\\b",
+        "(?i)(वैयक्तिक युपीआय|मॅनेजरच्या यूपीआयवर पाठवा|या यूपीआयवर पैसे पाठवा)",
+        "(?i)(व्यक्तिगत यूपीआई|मैनेजर के यूपीआई पर भेजें|इस यूपीआई पर पेमेंट करें)"
+      ],
+      "negations": [],
+      "explanations": {
+        "en": "Requesting payments to personal UPI accounts rather than registered corporate escrow accounts is a major red flag.",
+        "hi": "आधिकारिक कॉर्पोरेट खाते के बजाय किसी व्यक्तिगत यूपीआई आईडी पर पैसे भेजने को कहना सीधे तौर पर धोखे का संकेत है।",
+        "mr": "अधिकृत खात्याऐवजी वैयक्तिक यूपीआय (UPI) आयडीवर पैसे पाठवण्यास सांगणे हा सरळ फसवणुकीचा प्रकार आहे."
+      }
+    },
+    {
+      "id": "bank_transfer",
+      "name": "Direct Private Bank Transfer",
+      "weight": 30,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(transfer .* directly to .* bank account|do not pay through the official website|account will be activated once you transfer|personal bank account|transfer the amount to start earning)\\b",
+        "(?i)(थेट बँकेत ट्रान्सफर करा|वैयक्तिक बँक खात्यात पाठवा|अधिकृत वेबसाइटवरून पैसे भरू नका)",
+        "(?i)(सीधे बैंक खाते में ट्रांसफर करें|व्यक्तिगत बैंक खाते में भेजें|ऑफिशियल वेबसाइट से भुगतान न करें)"
+      ],
+      "negations": [
+        "(?i)\\b(never ask.*transfer money into personal accounts)\\b"
+      ],
+      "explanations": {
+        "en": "Instructing you to bypass official payment gateways and send money directly to personal bank accounts is a classic fraud tactic.",
+        "hi": "आधिकारिक वेबसाइट को छोड़कर सीधे किसी निजी बैंक खाते में पैसे भेजने का निर्देश देना धोखाधड़ी का एक सामान्य तरीका है।",
+        "mr": "अधिकृत वेबसाइट टाळून थेट खाजगी बँक खात्यात पैसे पाठवण्याचा सल्ला देणे ही ठकबाजीची नेहमीची पद्धत आहे."
+      }
+    },
+    {
+      "id": "withdrawal_fee",
+      "name": "Fee / Tax Required for Profit Withdrawal",
+      "weight": 35,
+      "severity": "high",
+      "patterns": [
+        "(?i)\\b(pay .* fee to unlock .* withdrawal|processing fee to release the funds|pay .* before releasing profits|clear pending tax to withdraw|verification fee through upi to unlock)\\b",
+        "(?i)(पैसे काढण्यासाठी फी भरा|नफा काढण्यापूर्वी शुल्क द्या|विथड्रॉल फी)",
+        "(?i)(विथड्रॉल के लिए फीस भरें|मुनाफा निकालने से पहले टैक्स दें|प्रोसेसिंग फीस भरें)"
+      ],
+      "negations": [],
+      "explanations": {
+        "en": "Demanding an advance 'processing fee', 'release fee', or 'tax' to withdraw your profits is an extortion scam. You will not get the money back.",
+        "hi": "अपना ही मुनाफा निकालने के लिए 'प्रोसेसिंग फीस' या 'टैक्स' की अग्रिम मांग करना ठगी है। पैसे देने पर भी कुछ वापस नहीं मिलता।",
+        "mr": "स्वतःचा नफा काढून घेण्यासाठी 'प्रोसेसिंग फी' किंवा 'टॅक्स' मागणे ही खंडणीखोरी आहे. पैसे भरूनही काहीही मिळत नाही."
+      }
+    }
+  ]
+}
