@@ -17,7 +17,7 @@ BENCHMARK_PATH = DATA_DIR / "test_benchmark.json"
 SEBI_SNAPSHOT_DATE = "October 03, 2026"
 
 # Supported languages
-SUPPORTED_LANGUAGES = ["en", "hi", "mr"]
+SUPPORTED_LANGUAGES = ["en", "hi", "ta", "te", "bn", "mr"]
 DEFAULT_LANGUAGE = "en"
 
 # LLM Configuration

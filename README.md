@@ -16,7 +16,7 @@
 ### What Trace Is:
 * **Investor Safety Infrastructure**: Helps users verify suspicious investment messages, screenshots, voice notes, and links **before** money moves or an unknown APK is installed.
 * **Deterministic Fact-Verification Engine**: Code rigorously verifies facts against an authentic dated snapshot of **3,321 official SEBI registered entities** (as of October 03, 2026) and 11 fraud rule categories with negation handling.
-* **Empathetic Regional Translation**: Localized explanations, summaries, and audio readout in **English, Hindi (हिन्दी), and Marathi (मराठी)**.
+* **Empathetic Regional Translation**: Localized explanations, summaries, and audio readout in **English, Hindi (हिन्दी), Tamil (தமிழ்), Telugu (తెలుగు), Bengali (বাংলা), and Marathi (मराठी)**.
 
 ### What Trace Is NOT:
 * NOT a trading app or investment platform.
@@ -79,7 +79,7 @@ flowchart TD
         
         Bands --> Explainer["5. Explainer & Localizer"]
         Explainer -.->|If GEMINI_API_KEY set| Gemini["Gemini Flash (Empathetic Analogy)"]
-        Explainer -->|Offline Default| Templates["Localized Rule Templates (EN / HI / MR)"]
+        Explainer -->|Offline Default| Templates["Localized Rule Templates (EN / HI / TA / TE / BN / MR)"]
     end
     
     Explainer --> ResultScreen[Result Screen]
@@ -169,9 +169,30 @@ python backend/tests/run_benchmark.py
 
 ## 9. Key Hackathon Deliverables & Features
 
-* **Mobile-First PWA**: Installable on Android, iOS, and Desktop.
-* **In-Browser OCR (Tesseract.js)**: Screenshot text extraction occurs entirely on the user's phone for privacy.
-* **Audio Accessibility (Web Speech API)**: Speaks the verdict aloud in Hindi, Marathi, or English for low-literacy users.
+* **Mobile-First PWA**: Built with HTML5, Tailwind CSS, and Vanilla JS, installable on Android, iOS, and Desktop.
+* **PWA Web Share Target**: Android OS integration via `manifest.json` `share_target`, allowing users to share suspicious messages directly from WhatsApp/SMS into TRACE.
+* **In-Browser OCR (Tesseract.js)**: Screenshot text extraction occurs entirely inside the user's browser for privacy.
+* **Voice Input (Web Speech Recognition)**: Captures regional speech directly into the input field.
+* **Demo Scenario Presets**: Interactive chips on the Input screen allowing evaluators to load authentic test scenarios with 1 click.
+* **Audio Accessibility (Web Speech API TTS)**: Web Speech Synthesis reads verdicts and warnings aloud in 6 supported languages (English, Hindi, Tamil, Telugu, Bengali, Marathi) with Play/Stop toggle.
+* **Everyday Analogy Cards**: Displays intuitive everyday story analogies on the Result and Details screens to help non-technical users understand risk.
+* **Precision Fact Engine & Entity Extractor**: Evaluates 11 fraud categories, negation patterns, official vs lookalike domain reputation, and sign-off names (e.g. `Regards, Kavitha Menon`).
+* **Interactive Judge Test Bench**: Built-in interactive modal in the web UI allowing evaluators to run live tests across all 100 benchmark scenarios directly via `/api/benchmark`.
 * **Family Guardian Share**: Generates a clean, privacy-scrubbed summary card ready for 1-tap WhatsApp sharing.
-* **Emergency Recovery Mode**: Golden Hour checklist, direct 1930 dialing, and pre-filled cybercrime complaint letters.
-* **Judge Test Bench**: Built-in interactive drawer in the web UI allowing evaluators to run 1-click tests across all 100 benchmark scenarios.
+* **Interactive Recovery Mode**: Golden Hour checklist, direct 1930 helpline dialing, and dynamic pre-filled complaint generator with user-entered transaction details (Amount, Bank/App, UTR, Date, Suspect).
+
+---
+
+## 10. Product Safety Statement & Hackathon Evaluation Alignment
+
+### Product Safety Statement:
+> [!IMPORTANT]
+> **TRACE is strictly an investor-safety and fraud-prevention tool.**
+> It does **NOT** provide investment advice, buy/sell/hold recommendations, stock-price predictions, return forecasts, broker promotions, or financial product upsells. It stores zero OTPs, SMS logs, or sensitive financial data.
+
+### SANGYAN Evaluation Criteria Alignment:
+1. **30% — Resilience & Safety Impact**: Comprehensive protection pipeline covering pre-transaction verification, entity authentication, family guardian warning sharing, and golden-hour post-payment recovery guidance (1930 helpline & formal complaint drafting).
+2. **25% — Tier-2/3 Bharat-First Usability**: Fully localized across **6 Indian languages** (English, Hindi, Tamil, Telugu, Bengali, Marathi) with regional voice input (Web Speech), in-browser OCR (Tesseract.js), audio readout (TTS), everyday story analogies, and clear visual risk indicators designed for non-technical users.
+3. **15% — Guardrail Compliance & Trust**: Strictly deterministic verification engine backed by an official snapshot of 3,321 SEBI-registered entities (Oct 03, 2026), 11 fraud categories, negation pattern handling, and zero-persistence privacy guarantees.
+4. **15% — Technical Execution**: Modern, high-performance architecture utilizing FastAPI, asynchronous backend verification, Tesseract.js OCR, Web Speech API integration, swappable Gemini Flash analogy engine, and lightweight PWA layout.
+5. **15% — Feasibility & Scalability**: Modular rule engine, automated 100-case evaluation benchmark via `/api/benchmark`, swappable LLM integration, and straightforward deployment paths.

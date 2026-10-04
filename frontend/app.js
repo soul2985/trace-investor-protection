@@ -16,6 +16,7 @@ let checkHistory = [];
 // Multilingual UI Text Dictionary (EN, HI, MR)
 const UI_TEXTS = {
   en: {
+    trace_it: "TRACE IT",
     input_title: "What did you receive?",
     input_sub: "Paste the message, upload a screenshot or speak it. We'll check for warning signs.",
     placeholder: "Paste message here...",
@@ -60,6 +61,7 @@ const UI_TEXTS = {
     recovery_sub: "Take action quickly. The golden hour response can freeze recipient accounts."
   },
   hi: {
+    trace_it: "ट्रेस करें",
     input_title: "आपको क्या संदेश मिला?",
     input_sub: "संदेश पेस्ट करें, स्क्रीनशॉट अपलोड करें या बोलकर बताएं। हम चेतावनी संकेतों की जांच करेंगे।",
     placeholder: "संदेश यहां पेस्ट करें...",
@@ -103,7 +105,143 @@ const UI_TEXTS = {
     recovery_title: "क्या आप पहले ही पैसे दे चुके हैं?",
     recovery_sub: "तुरंत कदम उठाएं। पहले कुछ घंटों में की गई कार्रवाई से पैसे रोके जा सकते हैं।"
   },
+  ta: {
+    trace_it: "ட்ரேஸ் செய்யவும்",
+    input_title: "உங்களுக்கு என்ன செய்தி வந்தது?",
+    input_sub: "செய்தியை ஒட்டவும், ஸ்கிரீன்ஷாட்டை பதிவேற்றவும் அல்லது பேசுங்கள். நாங்கள் சரிபார்ப்போம்.",
+    placeholder: "செய்தியை இங்கே ஒட்டவும்...",
+    action_upload: "பதிவேற்று",
+    action_camera: "கேமரா",
+    action_speak: "பேசுங்கள்",
+    action_link: "இணைப்பு",
+    check_now: "சரிபார்க்கவும்",
+    privacy_foot: "உங்கள் செய்தி எங்கும் சேமிக்கப்படாது.",
+    analysing_title: "உங்கள் செய்தி ஆய்வு செய்யப்படுகிறது...",
+    analysing_sub: "எச்சரிக்கை அறிகுறிகளையும் அதிகாரப்பூர்வ செபி பதிவுகளையும் சரிபார்க்கிறோம்.",
+    chk_1: "செய்தி படிக்கப்படுகிறது",
+    chk_2: "முக்கிய விவரங்கள் பெறப்படுகின்றன",
+    chk_3: "செபி பதிவுகள் சரிபார்க்கப்படுகின்றன",
+    chk_4: "எச்சரிக்கை அறிகுறிகள் தேடப்படுகின்றன",
+    chk_5: "AI மூலம் பகுப்பாய்வு செய்யப்படுகிறது",
+    chk_6: "முடிவு தயார் செய்யப்படுகிறது",
+    tip_title: "உங்களுக்கு தெரியுமா?",
+    tip_desc: "பல முதலீட்டு மோசடிக்காரர்கள் நம்பிக்கையை பெற போலி அல்லது திருடப்பட்ட செபி எண்களை பயன்படுத்துகின்றனர்.",
+    quick_summary_title: "சுருக்கமான தகவல்",
+    warning_signs_title: "முக்கிய எச்சரிக்கை அறிகுறிகள்",
+    btn_see_details: "முழு விவரங்களை காண்க",
+    btn_next_steps: "இப்போது என்ன செய்ய வேண்டும்?",
+    details_title: "உங்கள் செய்தி",
+    details_sub: "சந்தேகத்திற்குரிய பகுதிகளை நாங்கள் தனிப்படுத்தி காட்டியுள்ளோம்.",
+    extracted_title: "பெறப்பட்ட விவரங்கள்",
+    btn_to_action: "இப்போது என்ன செய்ய வேண்டும்?",
+    action_title: "இப்போது என்ன செய்ய வேண்டும்?",
+    action_sub: "பாதுகாப்பாக இருக்க இந்த படிகளை பின்பற்றுங்கள்.",
+    step1_title: "பணத்தை அனுப்ப வேண்டாம்",
+    step1_desc: "பணம் அனுப்புவது, கட்டணம் செலுத்துவது அல்லது UPI விவரங்களை பகிர்வதை தவிர்க்கவும்.",
+    step2_title: "செயலியை இன்ஸ்டால் செய்ய வேண்டாம்",
+    step2_desc: "தெரியாத APK கோப்புகளை பதிவிறக்கம் வேண்டாம் அல்லது திரையை பகிர வேண்டாம்.",
+    step3_title: "சுயமாக சரிபார்க்கவும்",
+    step3_desc: "செபியின் அதிகாரப்பூர்வ இணையதளத்தில் (sebi.gov.in) சரிபார்க்கவும்.",
+    step4_title: "தேவைப்பட்டால் புகார் செய்யவும்",
+    step4_desc: "cybercrime.gov.in இல் புகார் செய்யவும் அல்லது 1930 ஐ அழைக்கவும்.",
+    step5_title: "குடும்பத்தினருடன் பகிரவும்",
+    step5_desc: "அவர்களும் ஏமாறாமல் இருக்க இந்த செய்தியை குடும்பத்தினருக்கு தெரியப்படுத்துங்கள்.",
+    btn_open_reporting: "புகார் வழிகாட்டியை திறக்கவும்",
+    recovery_title: "ஏற்கனவே பணம் செலுத்திவிட்டீர்களா?",
+    recovery_sub: "உடனடி நடவடிக்கை எடுக்கவும். முதல் சில மணிநேரங்களில் செய்யப்படும் செயல் கணக்கை முடக்க உதவும்."
+  },
+  te: {
+    trace_it: "ట్రేస్ చేయండి",
+    input_title: "మీకు ఏమి సందేశం వచ్చింది?",
+    input_sub: "సందేశాన్ని పేస్ట్ చేయండి, స్క్రీన్‌షాట్‌ను అప్‌లోడ్ చేయండి లేదా మాట్లాడండి. మేము తనిఖీ చేస్తాము.",
+    placeholder: "సందేశాన్ని ఇక్కడ పేస్ట్ చేయండి...",
+    action_upload: "అప్‌లోడ్",
+    action_camera: "కెమెరా",
+    action_speak: "మాట్లాడండి",
+    action_link: "లింక్",
+    check_now: "తనిఖీ చేయండి",
+    privacy_foot: "మీ సందేశం ఎక్కడా నిల్వ చేయబడదు.",
+    analysing_title: "మీ సందేశం విశ్లేషించబడుతోంది...",
+    analysing_sub: "మేము హెచ్చరిక సంకేతాలు మరియు అధికారిక సెబీ రికార్డులను ధృవీకరిస్తున్నాము.",
+    chk_1: "సందేశం చదవబడుతోంది",
+    chk_2: "ముఖ్యమైన వివరాలు సేకరించబడుతున్నాయి",
+    chk_3: "సెబీ రికార్డులు తనిఖీ చేయబడుతున్నాయి",
+    chk_4: "హెచ్చరిక సంకేతాలు వెతకబడుతున్నాయి",
+    chk_5: "AI ద్వారా విశ్లేషణ",
+    chk_6: "ఫలితం సిద్ధం చేయబడుతోంది",
+    tip_title: "మీకు తెలుసా?",
+    tip_desc: "అనేక పెట్టుబడి మోసగాళ్ళు నమ్మకాన్ని పొందడానికి నకిలీ లేదా దొంగిలించిన సెబీ సంఖ్యలను ఉపయోగిస్తారు.",
+    quick_summary_title: "త్వరిత సారాంశం",
+    warning_signs_title: "ముఖ్యమైన హెచ్చరిక సంకేతాలు",
+    btn_see_details: "పూర్తి వివరాలను చూడండి",
+    btn_next_steps: "ఇప్పుడు మీరు ఏమి చేయాలి?",
+    details_title: "మీ సందేశం",
+    details_sub: "సందేహాస్పదంగా ఉన్న భాగాలను మేము హైలైట్ చేశాము.",
+    extracted_title: "సేకరించిన వివరాలు",
+    btn_to_action: "ఇప్పుడు మీరు ఏమి చేయాలి?",
+    action_title: "ఇప్పుడు మీరు ఏమి చేయాలి?",
+    action_sub: "సురక్షితంగా ఉండటానికి ఈ దశలను అనుసరించండి.",
+    step1_title: "డబ్బు బదిలీ చేయవద్దు",
+    step1_desc: "డబ్బు పంపడం, రుసుము చెల్లించడం లేదా UPI వివరాలను పంచుకోవడం నివారించండి.",
+    step2_title: "యాప్‌ను ఇన్‌స్టాల్ చేయవద్దు",
+    step2_desc: "తెలియని APK ఫైళ్లను డౌన్‌లోడ్ చేయవద్దు లేదా స్క్రీన్ షేరింగ్ అనుమతించవద్దు.",
+    step3_title: "స్వతంత్రంగా ధృవీకరించండి",
+    step3_desc: "సెబీ అధికారిక వెబ్‌సైట్ (sebi.gov.in) లో వ్యక్తిని లేదా సంస్థను తనిఖీ చేయండి.",
+    step4_title: "అవసరమైతే నివేదించండి",
+    step4_desc: "cybercrime.gov.in లో ఫిర్యాదు చేయండి లేదా 1930 కి కాల్ చేయండి.",
+    step5_title: "కుటుంబంతో పంచుకోండి",
+    step5_desc: "వారు మోసపోకుండా నిరోధించడానికి ఈ సందేశం గురించి మీ కుటుంబానికి తెలియజేయండి.",
+    btn_open_reporting: "ఫిర్యాదు మార్గదర్శిని తెరువండి",
+    recovery_title: "ఇప్పటికే డబ్బు చెల్లించారా?",
+    recovery_sub: "వెంటనే చర్య తీసుకోండి. మొదటి కొన్ని గంటల్లో తీసుకునే చర్య ఖాతాలను స్తంభింపజేస్తుంది."
+  },
+  bn: {
+    trace_it: "ট্রেস করুন",
+    input_title: "আপনি কি বার্তা পেয়েছেন?",
+    input_sub: "বার্তাটি পেস্ট করুন, স্ক্রিনশট আপলোড করুন বা বলুন। আমরা সতর্কবার্তা পরীক্ষা করব।",
+    placeholder: "বার্তাটি এখানে পেস্ট করুন...",
+    action_upload: "আপলোড",
+    action_camera: "ক্যামেরা",
+    action_speak: "বলুন",
+    action_link: "লিঙ্ক",
+    check_now: "পরীক্ষা করুন",
+    privacy_foot: "আপনার বার্তা কোথাও সংরক্ষিত হয় না।",
+    analysing_title: "আপনার বার্তার বিশ্লেষণ চলছে...",
+    analysing_sub: "আমরা সতর্ক সংকেত এবং অফিসিয়াল সেবি রেকর্ড যাচাই করছি।",
+    chk_1: "বার্তা পড়া হচ্ছে",
+    chk_2: "মূল বিবরণ নিষ্কাশন করা হচ্ছে",
+    chk_3: "সেবি রেকর্ড পরীক্ষা করা হচ্ছে",
+    chk_4: "সতর্ক সংকেত খোঁজা হচ্ছে",
+    chk_5: "AI দ্বারা বিশ্লেষণ",
+    chk_6: "ফলাফল তৈরি করা হচ্ছে",
+    tip_title: "আপনি কি জানেন?",
+    tip_desc: "অনেক বিনিয়োগ প্রতারক আস্থা তৈরি করতে ভুয়ো বা চুরি করা সেবি নম্বর ব্যবহার করে।",
+    quick_summary_title: "সংক্ষিপ্ত সারসংক্ষেপ",
+    warning_signs_title: "মূল সতর্ক সংকেত",
+    btn_see_details: "সম্পূর্ণ বিবরণ দেখুন",
+    btn_next_steps: "এখন আপনার কী করা উচিত?",
+    details_title: "আপনার বার্তা",
+    details_sub: "সন্দেহজনক অংশগুলি আমরা হাইলাইট করেছি।",
+    extracted_title: "প্রাপ্ত বিবরণ",
+    btn_to_action: "এখন আপনার কী করা উচিত?",
+    action_title: "এখন আপনার কী করা উচিত?",
+    action_sub: "নিরাপদ থাকতে এই পদক্ষেপগুলি অনুসরণ করুন।",
+    step1_title: "টাকা পাঠাবেন না",
+    step1_desc: "টাকা পাঠানো, ভেরিফিকেশন ফি দেওয়া বা UPI বিবরণ শেয়ার করা এড়িয়ে চলুন।",
+    step2_title: "অ্যাপ ইনস্টল করবেন না",
+    step2_desc: "অচেনা কোনো APK ডাউনলোড করবেন না বা স্ক্রিন শেয়ার করবেন না।",
+    step3_title: "স্বাধীনভাবে যাচাই করুন",
+    step3_desc: "সেবির অফিসিয়াল ওয়েবসাইটে (sebi.gov.in) ব্যক্তি বা ফার্ম পরীক্ষা করুন।",
+    step4_title: "প্রয়োজনে অভিযোগ জানান",
+    step4_desc: "cybercrime.gov.in-এ অভিযোগ জানান বা ১৯৩০ নম্বরে কল করুন।",
+    step5_title: "পরিবারের সাথে শেয়ার করুন",
+    step5_desc: "তারা যাতে প্রতারিত না হয় সে সম্পর্কে আপনার পরিবারকে জানান।",
+    btn_open_reporting: "অভিযোগ নির্দেশিকা খুলুন",
+    recovery_title: "ইতিমধ্যেই টাকা দিয়েছেন?",
+    recovery_sub: "দ্রুত পদক্ষেপ নিন। প্রথম কয়েক ঘণ্টার মধ্যে নেওয়া পদক্ষেপ অ্যাকাউন্ট ফ্রিজ করতে সাহায্য করে।"
+  },
   mr: {
+    trace_it: "ट्रेस करा",
     input_title: "तुम्हाला काय संदेश मिळाला?",
     input_sub: "संदेश पेस्ट करा, स्क्रीनशॉट अपलोड करा किंवा बोलून सांगा. आम्ही धोक्याची लक्षणे तपासू.",
     placeholder: "संदेश येथे पेस्ट करा...",
@@ -151,9 +289,10 @@ const UI_TEXTS = {
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   applyLanguage(currentLang);
   initSpeechRecognition();
+  checkShareTarget();
 });
 
 // Navigation Controller
@@ -171,6 +310,7 @@ function navigateTo(screenId) {
   });
 
   if (screenId !== currentScreen) {
+    stopAudioReadout();
     screenHistory.push(screenId);
     currentScreen = screenId;
   }
@@ -192,7 +332,7 @@ function navigateTo(screenId) {
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 }
 
 function handleBackNavigation() {
@@ -206,7 +346,7 @@ function handleBackNavigation() {
 }
 
 function updateBottomNav(activeTab) {
-  ['check', 'history', 'help', 'settings'].forEach(tab => {
+  ['check', 'history', 'benchmark', 'help', 'settings'].forEach(tab => {
     const btn = document.getElementById(`bnav-${tab}`);
     if (btn) {
       if (tab === activeTab) {
@@ -232,11 +372,31 @@ function clearInput() {
   input.focus();
 }
 
+function enterApplication() {
+  const intro = document.getElementById('screen-intro');
+  if (intro) {
+    intro.classList.add('fade-out-zoom');
+    setTimeout(() => {
+      intro.classList.add('hidden');
+      navigateTo('input');
+    }, 450);
+  } else {
+    navigateTo('input');
+  }
+}
+
 // Language Dropdown Handler
 function changeLanguage(lang) {
   currentLang = lang;
   applyLanguage(lang);
-  document.getElementById('settings-lang-label').innerText = lang === 'hi' ? 'हिन्दी' : (lang === 'mr' ? 'मराठी' : 'English');
+  const labels = { en: 'English', hi: 'हिन्दी', ta: 'தமிழ்', te: 'తెలుగు', bn: 'বাংলা', mr: 'मराठी' };
+  const labelEl = document.getElementById('settings-lang-label');
+  if (labelEl) labelEl.innerText = labels[lang] || 'English';
+
+  const dropNav = document.getElementById('lang-dropdown');
+  if (dropNav && dropNav.value !== lang) dropNav.value = lang;
+  const dropIntro = document.getElementById('lang-dropdown-intro');
+  if (dropIntro && dropIntro.value !== lang) dropIntro.value = lang;
 
   // If already analyzed, re-run analysis in target language
   if (lastAnalysisResult && currentMessage) {
@@ -246,6 +406,7 @@ function changeLanguage(lang) {
 
 function applyLanguage(lang) {
   const t = UI_TEXTS[lang] || UI_TEXTS.en;
+  setText('txt-trace-it', t.trace_it || 'TRACE IT');
   setText('txt-input-title', t.input_title);
   setText('txt-input-sub', t.input_sub);
   setText('txt-action-upload', t.action_upload);
@@ -316,7 +477,7 @@ async function handleFileSelect(event) {
   bannerText.innerText = "Extracting text in-browser...";
 
   try {
-    const ocrLang = currentLang === 'mr' || currentLang === 'hi' ? 'hin+eng' : 'eng';
+    const ocrMap = { en: 'eng', hi: 'hin+eng', ta: 'tam+eng', te: 'tel+eng', bn: 'ben+eng', mr: 'hin+eng' }; const ocrLang = ocrMap[currentLang] || 'eng';
     const result = await Tesseract.recognize(file, ocrLang);
     const text = result.data.text.trim();
     if (text) {
@@ -372,7 +533,7 @@ function toggleSpeechInput() {
     recognition.stop();
     stopSpeech();
   } else {
-    const code = currentLang === 'mr' ? 'mr-IN' : (currentLang === 'hi' ? 'hi-IN' : 'en-IN');
+    const langMap = { en: 'en-IN', hi: 'hi-IN', ta: 'ta-IN', te: 'te-IN', bn: 'bn-IN', mr: 'mr-IN' }; const code = langMap[currentLang] || 'en-IN';
     recognition.lang = code;
     recognition.start();
     isRecording = true;
@@ -393,6 +554,141 @@ function promptLinkInput() {
     const input = document.getElementById('message-input');
     input.value = (input.value ? input.value + '\n' : '') + url.trim();
     updateCharCount();
+  }
+}
+
+// Demo Scenario Presets (Input Presets Only - No Hardcoded Results)
+const DEMO_SCENARIOS = {
+  en: {
+    guaranteed: "Get guaranteed 40% monthly returns with our SEBI registered investment program. Invest ₹10,000 today and receive ₹25,000 within 30 days. 100% guaranteed.",
+    sebi: "I am a SEBI registered analyst (INH000000016). Send ₹50,000 directly to manager@okhdfcbank for guaranteed stock trades.",
+    apk: "Install this APK file http://trade-sec.xyz/app.apk to activate your investment account and start receiving guaranteed 30% monthly profits.",
+    link: "Join our exclusive VIP Telegram group https://t.me/vip_signals to receive insider market calls before everyone else.",
+    genuine: "Investments in mutual funds are subject to market risks. Read all scheme related documents carefully before investing."
+  },
+  hi: {
+    guaranteed: "हमारे सेबी पंजीकृत निवेश कार्यक्रम के साथ 40% मासिक रिटर्न की गारंटी पाएं। आज ₹10,000 का निवेश करें और 30 दिनों के भीतर ₹25,000 प्राप्त करें। 100% गारंटीकृत।",
+    sebi: "मैं एक सेबी पंजीकृत विश्लेषक (INH000000016) हूं। गारंटीकृत स्टॉक ट्रेडों के लिए सीधे manager@okhdfcbank पर ₹50,000 भेजें।",
+    apk: "अपने निवेश खाते को सक्रिय करने और 30% मासिक लाभ प्राप्त करने के लिए इस एपीके फ़ाइल http://trade-sec.xyz/app.apk को इंस्टॉल करें।",
+    link: "बाजार की अंदरूनी कॉल प्राप्त करने के लिए हमारे एक्सक्लूसिव वीआईपी टेलीग्राम ग्रुप https://t.me/vip_signals में शामिल हों।",
+    genuine: "म्यूचुअल फंड में निवेश बाजार जोखिमों के अधीन है। निवेश करने से पहले योजना से संबंधित सभी दस्तावेजों को ध्यान से पढ़ें।"
+  },
+  ta: {
+    guaranteed: "எங்கள் செபி பதிவுசெய்த முதலீட்டு திட்டத்தின் மூலம் 40% மாத வருமான உத்தரவாதம் பெறுங்கள். இன்று ₹10,000 முதலீடு செய்து 30 நாட்களில் ₹25,000 பெறுங்கள். 100% உத்தரவாதம்.",
+    sebi: "நான் செபி பதிவுசெய்த ஆய்வாளர் (INH000000016). உத்தரவாத பங்கு வர்த்தகத்திற்கு நேரடியாக manager@okhdfcbank க்கு ₹50,000 அனுப்புங்கள்.",
+    apk: "உங்கள் முதலீட்டு கணக்கை செயல்படுத்த மற்றும் 30% மாத லாபத்தை பெற இந்த APK கோப்பை http://trade-sec.xyz/app.apk இன்ஸ்டால் செய்யுங்கள்.",
+    link: "ரகசிய பங்கு தகவல்களை பெற எங்கள் விஐபி டெலிகிராம் குழுவில் https://t.me/vip_signals இணையுங்கள்.",
+    genuine: "மியூச்சுவல் ஃபண்ட் முதலீடுகள் சந்தை அபாயங்களுக்கு உட்பட்டவை. முதலீடு செய்வதற்கு முன் அனைத்து ஆவணங்களையும் கவனமாக படிக்கவும்."
+  },
+  te: {
+    guaranteed: "మా సెబీ నమోదిత పెట్టుబడి ప్రోగ్రామ్‌తో నెలవారీ 40% గ్యారెంటీ రాబడిని పొందండి. ఈరోజు ₹10,000 పెట్టుబడి పెట్టి 30 రోజుల్లో ₹25,000 పొందండి. 100% గ్యారెంటీ.",
+    sebi: "నేను సెబీ నమోదిత విశ్లేషకుడిని (INH000000016). గ్యారెంటీ స్టాక్ ట్రేడ్‌ల కోసం నేరుగా manager@okhdfcbank కి ₹50,000 పంపండి.",
+    apk: "మీ పెట్టుబడి ఖాతాను యాక్టివేట్ చేయడానికి మరియు 30% నెలవారీ లాభాలను పొందడానికి ఈ APK ఫైల్ http://trade-sec.xyz/app.apk ని ఇన్‌స్టాల్ చేయండి.",
+    link: "మార్కెట్ రహస్య సమాచారాన్ని పొందడానికి మా ప్రత్యేక విఐపి టెలిగ్రామ్ గ్రూప్ https://t.me/vip_signals లో చేరండి.",
+    genuine: "మ్యూచువల్ ఫండ్ పెట్టుబడులు మార్కెట్ ప్రమాదాలకు లోబడి ఉంటాయి. పెట్టుబడి పెట్టే ముందు సంబంధిత పత్రాలన్నింటినీ జాగ్రత్తగా చదవండి."
+  },
+  bn: {
+    guaranteed: "আমাদের সেবি নিবন্ধিত বিনিয়োগ প্রোগ্রামের সাথে প্রতি মাসে ৪০% নিশ্চিত রিটার্ন পান। আজ ₹১০,০০০ বিনিয়োগ করুন এবং ৩০ দিনের মধ্যে ২৫,০০০ পান। ১০০% গ্যারান্টিযুক্ত।",
+    sebi: "আমি একজন সেবি নিবন্ধিত বিশ্লেষক (INH000000016)। নিশ্চিত স্টক ট্রেডের জন্য সরাসরি manager@okhdfcbank এ ₹৫০,০০০ পাঠান।",
+    apk: "আপনার বিনিয়োগ অ্যাকাউন্ট সক্রিয় করতে এবং ৩০% মাসিক লাভ পেতে এই APK ফাইলটি http://trade-sec.xyz/app.apk ইনস্টল করুন।",
+    link: "বাজারের গোপন তথ্য পেতে আমাদের এক্সক্লুসিভ ভিআইপি টেলিগ্রাম গ্রুপে https://t.me/vip_signals যোগ দিন।",
+    genuine: "মিউচুয়াল ফান্ড বিনিয়োগ বাজারের ঝুঁকির অধীন। বিনিয়োগ করার আগে সমস্ত স্কিম সম্পর্কিত নথি সাবধানে পড়ুন।"
+  },
+  mr: {
+    guaranteed: "आमच्या सेबी नोंदणीकृत गुंतवणूक कार्यक्रमाद्वारे दरमहा 40% हमी परतावा मिळवा. आज ₹10,000 गुंतवा आणि 30 दिवसांत ₹25,000 मिळवा. 100% खात्रीशीर.",
+    sebi: "मी सेबी नोंदणीकृत विश्लेषक (INH000000016) आहे. खात्रीशीर स्टॉक ट्रेडसाठी थेट manager@okhdfcbank वर ₹50,000 पाठवा.",
+    apk: "तुमचे गुंतवणूक खाते सक्रिय करण्यासाठी आणि दरमहा 30% नफा मिळवण्यासाठी ही एपीके फाइल http://trade-sec.xyz/app.apk इंस्टॉल करा.",
+    link: "बाजारातील गुप्त टिप्स मिळवण्यासाठी आमच्या व्हीआयपी टेलिग्राम ग्रुपमध्ये https://t.me/vip_signals सामील व्हा.",
+    genuine: "म्युच्युअल फंडांमधील गुंतवणूक बाजारातील जोखमीच्या अधीन असते. गुंतवणूक करण्यापूर्वी योजनेशी संबंधित सर्व कागदपत्रे काळजीपूर्वक वाचा."
+  }
+};
+
+function loadDemoScenario(type) {
+  const langScenarios = DEMO_SCENARIOS[currentLang] || DEMO_SCENARIOS.en;
+  const text = langScenarios[type] || DEMO_SCENARIOS.en[type];
+  if (text) {
+    const input = document.getElementById('message-input');
+    if (input) {
+      input.value = text;
+      updateCharCount();
+      showToast("Sample scenario loaded. Click 'Check now' to analyze.");
+    }
+  }
+}
+
+// Web Speech Synthesis (TTS Audio Readout)
+let isSpeaking = false;
+let currentUtterance = null;
+
+function toggleAudioReadout() {
+  if (!('speechSynthesis' in window)) {
+    showToast("Audio readout is not supported in this browser.");
+    return;
+  }
+
+  if (isSpeaking) {
+    stopAudioReadout();
+    return;
+  }
+
+  if (!lastAnalysisResult) {
+    showToast("No verification result available to read.");
+    return;
+  }
+
+  window.speechSynthesis.cancel(); // Stop any active speech
+
+  const riskText = document.getElementById('result-risk-title')?.innerText || '';
+  const summaryText = lastAnalysisResult.summary || '';
+  const analogyText = lastAnalysisResult.analogy || '';
+
+  const textToRead = `${riskText}. ${summaryText}. ${analogyText ? analogyText : ''}`;
+
+  currentUtterance = new SpeechSynthesisUtterance(textToRead);
+
+  const langMap = { en: 'en-IN', hi: 'hi-IN', ta: 'ta-IN', te: 'te-IN', bn: 'bn-IN', mr: 'mr-IN' }; const langCode = langMap[currentLang] || 'en-IN';
+  currentUtterance.lang = langCode;
+  currentUtterance.rate = 0.9; // Calmer pace for senior citizens
+
+  currentUtterance.onstart = () => {
+    isSpeaking = true;
+    updateTTSButtonState(true);
+  };
+
+  currentUtterance.onend = () => {
+    isSpeaking = false;
+    updateTTSButtonState(false);
+  };
+
+  currentUtterance.onerror = (err) => {
+    console.warn("TTS playback error:", err);
+    isSpeaking = false;
+    updateTTSButtonState(false);
+  };
+
+  window.speechSynthesis.speak(currentUtterance);
+}
+
+function stopAudioReadout() {
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel();
+  }
+  isSpeaking = false;
+  updateTTSButtonState(false);
+}
+
+function updateTTSButtonState(speaking) {
+  const btnLabel = document.getElementById('txt-tts-label');
+  const btnIcon = document.getElementById('icon-tts');
+  if (btnLabel && btnIcon) {
+    if (speaking) {
+      const stopLabels = { en: 'Stop', hi: 'रोकें', ta: 'நிறுத்து', te: 'ఆపు', bn: 'থামুন', mr: 'थांबवा' }; btnLabel.innerText = stopLabels[currentLang] || 'Stop';
+      btnIcon.setAttribute('data-lucide', 'square');
+    } else {
+      const listenLabels = { en: 'Listen', hi: 'सुनें', ta: 'கேளுங்கள்', te: 'వినండి', bn: 'শুনুন', mr: 'ऐका' }; btnLabel.innerText = listenLabels[currentLang] || 'Listen';
+      btnIcon.setAttribute('data-lucide', 'volume-2');
+    }
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
   }
 }
 
@@ -423,7 +719,7 @@ async function submitAnalysis(isLanguageRerun = false) {
     }
   };
   resetChecklist();
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 
   let step = 1;
   const timer = setInterval(() => {
@@ -432,7 +728,7 @@ async function submitAnalysis(isLanguageRerun = false) {
       if (el) {
         el.className = "flex items-center gap-3 text-xs font-semibold text-[#17201C]";
         el.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 text-[#4F806B]"></i> <span>${el.innerText}</span>`;
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
       }
       step++;
     }
@@ -446,10 +742,13 @@ async function submitAnalysis(isLanguageRerun = false) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error ${response.status}`);
+      throw new Error(`Server connection error (${response.status}). Please check your backend connection.`);
     }
 
     const data = await response.json();
+    if (data.error) {
+      throw new Error(data.error);
+    }
     lastAnalysisResult = data;
 
     // Save to local history
@@ -465,7 +764,8 @@ async function submitAnalysis(isLanguageRerun = false) {
   } catch (err) {
     clearInterval(timer);
     console.error("Verification failed:", err);
-    showToast("Could not connect to verification server. Please ensure backend is running.");
+    const errorMsg = err.message || "Could not connect to verification server. Please ensure backend is running.";
+    showToast(errorMsg);
     navigateTo('input');
   }
 }
@@ -491,42 +791,54 @@ function renderScreen03Result(data) {
 
   // Format Risk State
   if (data.risk_band === 'HIGH_RISK') {
-    card.className = "card-lg p-5 border border-[#D97762]/40 bg-[#FBE4DE] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#D97762] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#D97762] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#D97762]";
-    title.innerText = currentLang === 'mr' ? 'अति धोकादायक' : (currentLang === 'hi' ? 'उच्च जोखिम' : 'High Risk');
+    card.className = "card-lg p-6 border border-[#C5533F]/40 bg-[#F9EAE7] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#C5533F] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#C5533F] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#C5533F]";
+    const highRiskTitles = { en: 'High Risk', hi: 'उच्च जोखिम', ta: 'அதிக ஆபத்து', te: 'అధిక ప్రమాదం', bn: 'উচ্চ ঝুঁকি', mr: 'अति धोकादायक' }; title.innerText = highRiskTitles[currentLang] || 'High Risk';
     sub.innerText = data.summary;
   } else if (data.risk_band === 'MEDIUM_RISK') {
-    card.className = "card-lg p-5 border border-[#D4A34A]/40 bg-[#F8EBCF] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#D4A34A] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="alert-circle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#D4A34A] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#D4A34A]";
+    card.className = "card-lg p-6 border border-[#C58B2B]/40 bg-[#F7EEDC] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#C58B2B] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="alert-circle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#C58B2B] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#C58B2B]";
     title.innerText = currentLang === 'mr' ? 'सावधगिरी आवश्यक' : (currentLang === 'hi' ? 'मध्यम जोखिम' : 'Medium Risk');
     sub.innerText = data.summary;
   } else if (data.risk_band === 'LOW_RISK') {
-    card.className = "card-lg p-5 border border-[#4F806B]/40 bg-[#E4EFE9] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#4F806B] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#4F806B] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#4F806B]";
+    card.className = "card-lg p-6 border border-[#163227]/40 bg-[#DDE7E1] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#163227] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#163227] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#163227]";
     title.innerText = currentLang === 'mr' ? 'कमी जोखीम' : (currentLang === 'hi' ? 'कम जोखिम' : 'Low Risk');
     sub.innerText = data.summary;
   } else {
     // CAN'T TELL
-    card.className = "card-lg p-5 border border-[#E4E2DA] bg-[#E7F0F7] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#5B8FB9] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="help-circle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#5B8FB9] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#5B8FB9]";
+    card.className = "card-lg p-6 border border-[#0A1C16]/12 bg-[#FAF8F5] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#5B8FB9] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="help-circle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#5B8FB9] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#5B8FB9]";
     title.innerText = currentLang === 'mr' ? 'सांगता येत नाही' : (currentLang === 'hi' ? 'कहा नहीं जा सकता' : "Can't Tell");
     sub.innerText = data.summary;
   }
 
   confPill.innerText = `${data.confidence_score}% Confidence`;
   summaryText.innerText = data.summary;
+
+  // Render Analogy Card on Result Screen
+  const analogyResultCard = document.getElementById('card-analogy-result');
+  const analogyResultText = document.getElementById('result-analogy-text');
+  if (analogyResultCard && analogyResultText) {
+    if (data.analogy && data.analogy.trim()) {
+      analogyResultText.innerText = data.analogy;
+      analogyResultCard.classList.remove('hidden');
+    } else {
+      analogyResultCard.classList.add('hidden');
+    }
+  }
 
   // Warning signs list
   warningList.innerHTML = '';
@@ -550,7 +862,7 @@ function renderScreen03Result(data) {
     });
   }
 
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 }
 
 // Screen 04 — Details Screen Rendering
@@ -609,6 +921,18 @@ function renderScreen04Details(data) {
     addDetailRow('credit-card', 'UPI ID', data.entities.upi_ids[0], { text: 'Personal UPI', color: 'red' });
   }
 
+  // Render Analogy Card on Details Screen
+  const analogyDetailsCard = document.getElementById('card-analogy-details');
+  const analogyDetailsText = document.getElementById('details-analogy-text');
+  if (analogyDetailsCard && analogyDetailsText) {
+    if (data.analogy && data.analogy.trim()) {
+      analogyDetailsText.innerText = data.analogy;
+      analogyDetailsCard.classList.remove('hidden');
+    } else {
+      analogyDetailsCard.classList.add('hidden');
+    }
+  }
+
   // 3. SEBI Verification Card
   const sebiBadge = document.getElementById('details-sebi-badge');
   const sebiInfo = document.getElementById('details-sebi-info');
@@ -639,7 +963,7 @@ function renderScreen04Details(data) {
     sebiInfo.innerHTML = `<p>No SEBI registration number was claimed in this message to verify.</p>`;
   }
 
-  lucide.createIcons();
+  if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
 }
 
 function renderHighlightedText(container, text, highlights) {
@@ -679,12 +1003,66 @@ function copyOriginalMessage() {
   });
 }
 
-// Screen 08 — Recovery Guide Rendering
+// PWA Share Target Handler
+function checkShareTarget() {
+  const params = new URLSearchParams(window.location.search);
+  const sharedText = params.get('text') || params.get('title') || params.get('url');
+  if (sharedText && sharedText.trim()) {
+    const input = document.getElementById('message-input');
+    if (input) {
+      input.value = sharedText.trim();
+      updateCharCount();
+      showToast("Shared text loaded into TRACE!");
+    }
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+}
+
+// Screen 08 — Recovery Guide & Interactive Complaint Generator
 function renderScreen08Recovery(data) {
-  const upi = data.entities.upi_ids.join(', ') || 'N/A';
-  const phone = data.entities.phone_numbers.join(', ') || 'N/A';
-  const amount = data.entities.amounts.join(', ') || 'N/A';
-  const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  if (data && data.entities) {
+    const amountInput = document.getElementById('rec-amount');
+    const upiInput = document.getElementById('rec-suspect-upi');
+    const phoneInput = document.getElementById('rec-suspect-phone');
+    const nameInput = document.getElementById('rec-suspect-name');
+
+    if (amountInput && !amountInput.value && data.entities.amounts.length > 0) {
+      amountInput.value = data.entities.amounts[0];
+    }
+    if (upiInput && !upiInput.value && data.entities.upi_ids.length > 0) {
+      upiInput.value = data.entities.upi_ids[0];
+    }
+    if (phoneInput && !phoneInput.value && data.entities.phone_numbers.length > 0) {
+      phoneInput.value = data.entities.phone_numbers[0];
+    }
+    if (nameInput && !nameInput.value && data.entities.claimed_names.length > 0) {
+      nameInput.value = data.entities.claimed_names[0];
+    }
+  }
+
+  generateCustomComplaint();
+}
+
+function generateCustomComplaint() {
+  const amount = document.getElementById('rec-amount')?.value.trim() || '[Specify Amount]';
+  const bank = document.getElementById('rec-bank')?.value.trim() || '[Bank / UPI App]';
+  const utr = document.getElementById('rec-utr')?.value.trim() || '[Transaction UTR ID]';
+  const dateVal = document.getElementById('rec-date')?.value;
+  const date = dateVal ? new Date(dateVal).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  const suspectName = document.getElementById('rec-suspect-name')?.value.trim();
+  const suspectPhone = document.getElementById('rec-suspect-phone')?.value.trim();
+  const suspectUpi = document.getElementById('rec-suspect-upi')?.value.trim();
+
+  let suspectBlock = '';
+  if (suspectName || suspectPhone || suspectUpi) {
+    suspectBlock = `\nSuspect Details:\n` +
+      (suspectName ? `- Suspect Name: ${suspectName}\n` : '') +
+      (suspectPhone ? `- Suspect Phone: ${suspectPhone}\n` : '') +
+      (suspectUpi ? `- Suspect Account/UPI: ${suspectUpi}\n` : '');
+  }
+
+  const modus = lastAnalysisResult ? lastAnalysisResult.summary : 'Fraudulent investment solicitation offering deceptive returns.';
 
   const draft = `To: The Cyber Crime Cell / Bank Fraud Grievance Officer
 Subject: Urgent Complaint Regarding Financial Extortion & Account Freeze Request
@@ -694,24 +1072,130 @@ I am submitting an urgent report regarding fraudulent investment solicitations v
 
 Incident Particulars:
 - Incident Date: ${date}
-- Fraudulent UPI/Account Provided: ${upi}
-- Contact/Phone Number: ${phone}
 - Disputed Transaction Amount: ${amount}
-- Scam Modus: ${data.summary}
+- Payment Source App/Bank: ${bank}
+- Transaction / UTR Ref Number: ${utr}${suspectBlock}
+- Scam Modus: ${modus}
 
 Please immediately issue an account freeze notice to the beneficiary institution under 1930 Cybercrime SOP and initiate transaction recall procedures.
 
 Sincerely,
 [Your Name]
-[Your Phone Number]`;
+[Your Contact Number]`;
 
-  document.getElementById('recovery-complaint-draft').value = draft;
+  const draftEl = document.getElementById('recovery-complaint-draft');
+  if (draftEl) draftEl.value = draft;
+}
+
+function resetRecoveryForm() {
+  ['rec-amount', 'rec-bank', 'rec-utr', 'rec-date', 'rec-suspect-name', 'rec-suspect-phone', 'rec-suspect-upi'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  generateCustomComplaint();
+  showToast("Recovery form cleared.");
 }
 
 function copyComplaintText() {
   const el = document.getElementById('recovery-complaint-draft');
   navigator.clipboard.writeText(el.value).then(() => {
     showToast("Complaint draft copied!");
+  });
+}
+
+// Judge Test Bench Modal & Live Benchmark Runner
+let lastBenchmarkData = null;
+let currentBenchmarkFilter = 'all';
+
+function openBenchmarkModal() {
+  document.getElementById('modal-benchmark').classList.remove('hidden');
+  updateBottomNav('benchmark');
+}
+
+function closeBenchmarkModal() {
+  document.getElementById('modal-benchmark').classList.add('hidden');
+  updateBottomNav('check');
+}
+
+async function executeBenchmarkRun() {
+  const loading = document.getElementById('benchmark-loading');
+  const errorEl = document.getElementById('benchmark-error');
+  const metrics = document.getElementById('benchmark-metrics-container');
+  const runBtn = document.getElementById('btn-run-benchmark');
+
+  loading.classList.remove('hidden');
+  errorEl.classList.add('hidden');
+  metrics.classList.add('hidden');
+  if (runBtn) runBtn.disabled = true;
+
+  try {
+    const res = await fetch('/api/benchmark');
+    if (!res.ok) {
+      throw new Error(`HTTP error ${res.status}`);
+    }
+    const data = await res.json();
+    lastBenchmarkData = data;
+    renderBenchmarkData(data);
+    metrics.classList.remove('hidden');
+    if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+  } catch (err) {
+    console.error("Benchmark API Error:", err);
+    errorEl.innerText = "Could not connect to /api/benchmark. Ensure the backend server is running.";
+    errorEl.classList.remove('hidden');
+  } finally {
+    loading.classList.add('hidden');
+    if (runBtn) runBtn.disabled = false;
+  }
+}
+
+function renderBenchmarkData(data) {
+  document.getElementById('bm-overall-accuracy').innerText = `${data.overall_accuracy_pct}%`;
+  document.getElementById('bm-scam-rate').innerText = `${data.scam_detection_rate_pct}%`;
+  document.getElementById('bm-false-alarm').innerText = `${data.false_positive_rate_pct}%`;
+  document.getElementById('bm-ambiguous-rate').innerText = `${data.ambiguous_accuracy_pct}%`;
+
+  document.getElementById('bm-count-scam').innerText = data.scam_counts;
+  document.getElementById('bm-count-genuine').innerText = data.genuine_counts;
+  document.getElementById('bm-count-ambiguous').innerText = data.ambiguous_counts;
+
+  document.getElementById('bm-total-cases').innerText = data.total_cases;
+  renderBenchmarkCases(data.results, currentBenchmarkFilter);
+}
+
+function filterBenchmarkCases(filter) {
+  currentBenchmarkFilter = filter;
+  if (lastBenchmarkData) {
+    renderBenchmarkCases(lastBenchmarkData.results, filter);
+  }
+}
+
+function renderBenchmarkCases(cases, filter) {
+  const list = document.getElementById('benchmark-cases-list');
+  if (!list) return;
+  list.innerHTML = '';
+
+  const filtered = cases.filter(c => filter === 'all' || (filter === 'fail' && !c.pass));
+
+  if (filtered.length === 0) {
+    list.innerHTML = `<div class="text-center py-4 text-[#4F806B] font-semibold">No ${filter === 'fail' ? 'failures' : 'test cases'} found! All tests passed cleanly.</div>`;
+    return;
+  }
+
+  filtered.forEach(c => {
+    const row = document.createElement('div');
+    const isPass = c.pass;
+    const badgeClass = isPass ? 'bg-[#E4EFE9] text-[#4F806B]' : 'bg-[#FBE4DE] text-[#D97762]';
+    const badgeText = isPass ? 'PASS' : 'FAIL';
+
+    row.className = "p-2 rounded-xl border border-[#E4E2DA] bg-[#F7F2E9]/40 flex items-center justify-between text-[11px]";
+    row.innerHTML = `
+      <div class="overflow-hidden pr-2">
+        <div class="font-medium text-[#0F1F1A] truncate"><span class="font-mono text-[10px] text-[#929A95]">#${c.id}</span> ${escapeHtml(c.text)}</div>
+        <div class="text-[10px] text-[#66716B]">Cat: ${c.category} | Expected: ${c.expected} | Actual: ${c.actual}</div>
+      </div>
+      <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${badgeClass} flex-shrink-0">${badgeText}</span>
+    `;
+    list.appendChild(row);
   });
 }
 
@@ -838,3 +1322,14 @@ function showToast(msg) {
     toast.classList.add('opacity-0', 'pointer-events-none');
   }, 2500);
 }
+
+// Global Keyboard Accessibility Handler (Escape key to close any open modal)
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeBenchmarkModal();
+    closeShareModal();
+    closeHistoryModal();
+    closeHelpModal();
+    closeSettingsModal();
+  }
+});

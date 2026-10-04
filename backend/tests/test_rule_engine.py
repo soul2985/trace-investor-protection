@@ -1,12 +1,13 @@
 """
 Unit tests for Scam & Claim Verifier.
-Tests Rule Engine, Negation Handling, Multilingual regex, and SEBI Verifier.
+Tests Rule Engine, Negation Handling, Multilingual regex, SEBI Verifier, and Link Checker.
 """
 import unittest
 from backend.app.rule_engine import rule_engine
 from backend.app.sebi_verifier import sebi_verifier
 from backend.app.entity_extractor import extract_entities
 from backend.app.risk_aggregator import aggregate_risk
+from backend.app.link_checker import check_url
 
 class TestRuleEngine(unittest.TestCase):
     def test_guaranteed_returns_flagged(self):
@@ -32,6 +33,27 @@ class TestRuleEngine(unittest.TestCase):
     def test_marathi_fraud_message(self):
         text = "दरमहा 40% खात्रीशीर परतावा मिळवा. लगेच पैसे पाठवा आणि हे अ‍ॅप इन्स्टॉल करा."
         res = rule_engine.evaluate(text, language="mr")
+        rule_ids = [r["rule_id"] for r in res["triggered_rules"]]
+        self.assertIn("guaranteed_returns", rule_ids)
+        self.assertIn("app_install", rule_ids)
+
+    def test_tamil_fraud_message(self):
+        text = "40% மாத வருமான உத்தரவாதம் பெறுங்கள். இந்த APK கோப்பை இன்ஸ்டால் செய்யுங்கள்."
+        res = rule_engine.evaluate(text, language="ta")
+        rule_ids = [r["rule_id"] for r in res["triggered_rules"]]
+        self.assertIn("guaranteed_returns", rule_ids)
+        self.assertIn("app_install", rule_ids)
+
+    def test_telugu_fraud_message(self):
+        text = "నెలవారీ 40% గ్యారెంటీ రాబడిని పొందండి. మా ప్రత్యేక టెలిగ్రామ్ గ్రూప్‌లో చేరండి."
+        res = rule_engine.evaluate(text, language="te")
+        rule_ids = [r["rule_id"] for r in res["triggered_rules"]]
+        self.assertIn("guaranteed_returns", rule_ids)
+        self.assertIn("private_group", rule_ids)
+
+    def test_bengali_fraud_message(self):
+        text = "প্রতি মাসে ৪০% নিশ্চিত রিটার্ন পান। এই APK ফাইলটি ইনস্টল করুন।"
+        res = rule_engine.evaluate(text, language="bn")
         rule_ids = [r["rule_id"] for r in res["triggered_rules"]]
         self.assertIn("guaranteed_returns", rule_ids)
         self.assertIn("app_install", rule_ids)
@@ -96,6 +118,40 @@ class TestEntityExtractor(unittest.TestCase):
         self.assertIn("suresh@oksbi", entities["upi_ids"])
         self.assertTrue(any("t.me" in u for u in entities["urls"]))
         self.assertTrue(any("25,000" in a for a in entities["amounts"]))
+
+    def test_signoff_name_extractions(self):
+        e1 = extract_entities("Regards,\nKavitha Menon")
+        self.assertIn("Kavitha Menon", e1["claimed_names"])
+
+        e2 = extract_entities("Contact: Kavitha Menon for details")
+        self.assertIn("Kavitha Menon", e2["claimed_names"])
+
+        e3 = extract_entities("From: Kavitha Menon, SEBI advisor")
+        self.assertIn("Kavitha Menon", e3["claimed_names"])
+
+class TestLinkChecker(unittest.TestCase):
+    def test_legitimate_sebi_domains(self):
+        res1 = check_url("http://sebi.gov.in/reports")
+        self.assertEqual(res1["severity"], "low")
+        self.assertEqual(len(res1["issues"]), 0)
+
+        res2 = check_url("https://www.sebi.gov.in")
+        self.assertEqual(res2["severity"], "low")
+        self.assertEqual(len(res2["issues"]), 0)
+
+        res3 = check_url("http://sebi.gov.in:80")
+        self.assertEqual(res3["severity"], "low")
+
+    def test_malicious_lookalike_domains(self):
+        res1 = check_url("http://fake-sebi.gov.in")
+        self.assertEqual(res1["severity"], "high")
+        self.assertTrue(any("likely mimicking" in issue for issue in res1["issues"]))
+
+        res2 = check_url("http://sebi-gov.in")
+        self.assertEqual(res2["severity"], "high")
+
+        res3 = check_url("http://sebi.gov.in.example.com")
+        self.assertEqual(res3["severity"], "high")
 
 if __name__ == "__main__":
     unittest.main()
