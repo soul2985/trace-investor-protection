@@ -45,10 +45,9 @@ PERCENTAGE_REGEX = re.compile(
     re.IGNORECASE
 )
 
-# Name extraction patterns ("I am <Name>", "Analyst <Name>", "from <Firm>")
+# Name extraction patterns ("I am <Name>", "Analyst <Name>", "Regards, <Name>", "Contact: <Name>")
 NAME_PREFIX_REGEX = re.compile(
-    r"(?:I am|My name is|Analyst|Advisor|Research Analyst|Mr\.?|Mrs\.?|Ms\.?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})",
-    re.IGNORECASE
+    r"(?i:I am|My name is|Analyst:?|Advisor:?|Research Analyst:?|Mr\.?|Mrs\.?|Ms\.?|Regards|Thanks|Best|Contact:?|From:?|Advice from|Advise by)[,\s:]+([A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,2})"
 )
 
 def extract_entities(text: str) -> Dict[str, Any]:

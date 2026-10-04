@@ -16,6 +16,15 @@ URL_SHORTENERS = {
     "shorturl.at", "ow.ly", "buff.ly", "goo.gl"
 }
 
+OFFICIAL_BRAND_DOMAINS = {
+    "sebi": {"sebi.gov.in"},
+    "rbi": {"rbi.org.in", "rbi.gov.in"},
+    "zerodha": {"zerodha.com", "zerodha.in"},
+    "groww": {"groww.in", "groww.com"},
+    "angelone": {"angelone.in", "angelone.com"},
+    "upstox": {"upstox.com", "upstox.in"}
+}
+
 PHISHING_KEYWORDS = [
     "sebi", "rbi", "zerodha", "groww", "angelone", "upstox", "bonus",
     "guarantee", "free-profit", "vip-trade", "secure-invest"
@@ -30,6 +39,7 @@ def check_url(url: str) -> Dict[str, Any]:
     
     parsed = urlparse(url if "://" in url else "http://" + url)
     netloc = parsed.netloc.lower()
+    hostname = (parsed.hostname or netloc.split(":")[0]).lower()
     path = parsed.path.lower()
     
     # Check 1: Direct APK download
@@ -39,31 +49,39 @@ def check_url(url: str) -> Dict[str, Any]:
         
     # Check 2: Known URL shortener hiding target
     for shortener in URL_SHORTENERS:
-        if netloc == shortener or netloc.endswith("." + shortener):
+        if hostname == shortener or hostname.endswith("." + shortener):
             issues.append(f"Shortened URL ({shortener}) used to conceal actual destination.")
             if severity != "high":
                 severity = "medium"
             break
             
     # Check 3: Private Telegram or WhatsApp group link
-    if "t.me" in netloc or "chat.whatsapp.com" in (netloc + path):
+    if "t.me" in hostname or "chat.whatsapp.com" in (hostname + path):
         issues.append("Direct invite link to private messaging group.")
         if severity != "high":
             severity = "medium"
             
     # Check 4: Suspicious TLD
     for tld in SUSPICIOUS_TLDS:
-        if netloc.endswith(tld):
+        if hostname.endswith(tld):
             issues.append(f"Uses suspicious low-cost top-level domain ({tld}) commonly associated with disposable scam pages.")
             severity = "high"
             break
             
     # Check 5: Lookalike / Brand impersonation in domain
     for kw in PHISHING_KEYWORDS:
-        if kw in netloc and not netloc.endswith(f"{kw}.gov.in") and not netloc.endswith(f"{kw}.com") and not netloc.endswith(f"{kw}.in"):
-            issues.append(f"Domain contains financial keyword '{kw}', likely mimicking a legitimate institution.")
-            severity = "high"
-            break
+        if kw in hostname:
+            is_legitimate = False
+            if kw in OFFICIAL_BRAND_DOMAINS:
+                official_set = OFFICIAL_BRAND_DOMAINS[kw]
+                for official in official_set:
+                    if hostname == official or hostname.endswith("." + official):
+                        is_legitimate = True
+                        break
+            if not is_legitimate:
+                issues.append(f"Domain contains financial keyword '{kw}', likely mimicking a legitimate institution.")
+                severity = "high"
+                break
 
     return {
         "url": url,
