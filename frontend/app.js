@@ -16,6 +16,7 @@ let checkHistory = [];
 // Multilingual UI Text Dictionary (EN, HI, MR)
 const UI_TEXTS = {
   en: {
+    trace_it: "TRACE IT",
     input_title: "What did you receive?",
     input_sub: "Paste the message, upload a screenshot or speak it. We'll check for warning signs.",
     placeholder: "Paste message here...",
@@ -60,6 +61,7 @@ const UI_TEXTS = {
     recovery_sub: "Take action quickly. The golden hour response can freeze recipient accounts."
   },
   hi: {
+    trace_it: "ट्रेस करें",
     input_title: "आपको क्या संदेश मिला?",
     input_sub: "संदेश पेस्ट करें, स्क्रीनशॉट अपलोड करें या बोलकर बताएं। हम चेतावनी संकेतों की जांच करेंगे।",
     placeholder: "संदेश यहां पेस्ट करें...",
@@ -104,6 +106,7 @@ const UI_TEXTS = {
     recovery_sub: "तुरंत कदम उठाएं। पहले कुछ घंटों में की गई कार्रवाई से पैसे रोके जा सकते हैं।"
   },
   ta: {
+    trace_it: "ட்ரேஸ் செய்யவும்",
     input_title: "உங்களுக்கு என்ன செய்தி வந்தது?",
     input_sub: "செய்தியை ஒட்டவும், ஸ்கிரீன்ஷாட்டை பதிவேற்றவும் அல்லது பேசுங்கள். நாங்கள் சரிபார்ப்போம்.",
     placeholder: "செய்தியை இங்கே ஒட்டவும்...",
@@ -148,6 +151,7 @@ const UI_TEXTS = {
     recovery_sub: "உடனடி நடவடிக்கை எடுக்கவும். முதல் சில மணிநேரங்களில் செய்யப்படும் செயல் கணக்கை முடக்க உதவும்."
   },
   te: {
+    trace_it: "ట్రేస్ చేయండి",
     input_title: "మీకు ఏమి సందేశం వచ్చింది?",
     input_sub: "సందేశాన్ని పేస్ట్ చేయండి, స్క్రీన్‌షాట్‌ను అప్‌లోడ్ చేయండి లేదా మాట్లాడండి. మేము తనిఖీ చేస్తాము.",
     placeholder: "సందేశాన్ని ఇక్కడ పేస్ట్ చేయండి...",
@@ -192,6 +196,7 @@ const UI_TEXTS = {
     recovery_sub: "వెంటనే చర్య తీసుకోండి. మొదటి కొన్ని గంటల్లో తీసుకునే చర్య ఖాతాలను స్తంభింపజేస్తుంది."
   },
   bn: {
+    trace_it: "ট্রেস করুন",
     input_title: "আপনি কি বার্তা পেয়েছেন?",
     input_sub: "বার্তাটি পেস্ট করুন, স্ক্রিনশট আপলোড করুন বা বলুন। আমরা সতর্কবার্তা পরীক্ষা করব।",
     placeholder: "বার্তাটি এখানে পেস্ট করুন...",
@@ -236,6 +241,7 @@ const UI_TEXTS = {
     recovery_sub: "দ্রুত পদক্ষেপ নিন। প্রথম কয়েক ঘণ্টার মধ্যে নেওয়া পদক্ষেপ অ্যাকাউন্ট ফ্রিজ করতে সাহায্য করে।"
   },
   mr: {
+    trace_it: "ट्रेस करा",
     input_title: "तुम्हाला काय संदेश मिळाला?",
     input_sub: "संदेश पेस्ट करा, स्क्रीनशॉट अपलोड करा किंवा बोलून सांगा. आम्ही धोक्याची लक्षणे तपासू.",
     placeholder: "संदेश येथे पेस्ट करा...",
@@ -366,11 +372,31 @@ function clearInput() {
   input.focus();
 }
 
+function enterApplication() {
+  const intro = document.getElementById('screen-intro');
+  if (intro) {
+    intro.classList.add('fade-out-zoom');
+    setTimeout(() => {
+      intro.classList.add('hidden');
+      navigateTo('input');
+    }, 450);
+  } else {
+    navigateTo('input');
+  }
+}
+
 // Language Dropdown Handler
 function changeLanguage(lang) {
   currentLang = lang;
   applyLanguage(lang);
-  const labels = { en: 'English', hi: 'हिन्दी', ta: 'தமிழ்', te: 'తెలుగు', bn: 'বাংলা', mr: 'मराठी' }; document.getElementById('settings-lang-label').innerText = labels[lang] || 'English';
+  const labels = { en: 'English', hi: 'हिन्दी', ta: 'தமிழ்', te: 'తెలుగు', bn: 'বাংলা', mr: 'मराठी' };
+  const labelEl = document.getElementById('settings-lang-label');
+  if (labelEl) labelEl.innerText = labels[lang] || 'English';
+
+  const dropNav = document.getElementById('lang-dropdown');
+  if (dropNav && dropNav.value !== lang) dropNav.value = lang;
+  const dropIntro = document.getElementById('lang-dropdown-intro');
+  if (dropIntro && dropIntro.value !== lang) dropIntro.value = lang;
 
   // If already analyzed, re-run analysis in target language
   if (lastAnalysisResult && currentMessage) {
@@ -380,6 +406,7 @@ function changeLanguage(lang) {
 
 function applyLanguage(lang) {
   const t = UI_TEXTS[lang] || UI_TEXTS.en;
+  setText('txt-trace-it', t.trace_it || 'TRACE IT');
   setText('txt-input-title', t.input_title);
   setText('txt-input-sub', t.input_sub);
   setText('txt-action-upload', t.action_upload);
@@ -764,36 +791,36 @@ function renderScreen03Result(data) {
 
   // Format Risk State
   if (data.risk_band === 'HIGH_RISK') {
-    card.className = "card-lg p-5 border border-[#D97762]/40 bg-[#FBE4DE] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#D97762] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#D97762] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#D97762]";
+    card.className = "card-lg p-6 border border-[#C5533F]/40 bg-[#F9EAE7] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#C5533F] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="alert-triangle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#C5533F] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#C5533F]";
     const highRiskTitles = { en: 'High Risk', hi: 'उच्च जोखिम', ta: 'அதிக ஆபத்து', te: 'అధిక ప్రమాదం', bn: 'উচ্চ ঝুঁকি', mr: 'अति धोकादायक' }; title.innerText = highRiskTitles[currentLang] || 'High Risk';
     sub.innerText = data.summary;
   } else if (data.risk_band === 'MEDIUM_RISK') {
-    card.className = "card-lg p-5 border border-[#D4A34A]/40 bg-[#F8EBCF] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#D4A34A] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="alert-circle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#D4A34A] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#D4A34A]";
+    card.className = "card-lg p-6 border border-[#C58B2B]/40 bg-[#F7EEDC] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#C58B2B] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="alert-circle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#C58B2B] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#C58B2B]";
     title.innerText = currentLang === 'mr' ? 'सावधगिरी आवश्यक' : (currentLang === 'hi' ? 'मध्यम जोखिम' : 'Medium Risk');
     sub.innerText = data.summary;
   } else if (data.risk_band === 'LOW_RISK') {
-    card.className = "card-lg p-5 border border-[#4F806B]/40 bg-[#E4EFE9] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#4F806B] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="check-circle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#4F806B] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#4F806B]";
+    card.className = "card-lg p-6 border border-[#163227]/40 bg-[#DDE7E1] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#163227] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#163227] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#163227]";
     title.innerText = currentLang === 'mr' ? 'कमी जोखीम' : (currentLang === 'hi' ? 'कम जोखिम' : 'Low Risk');
     sub.innerText = data.summary;
   } else {
     // CAN'T TELL
-    card.className = "card-lg p-5 border border-[#E4E2DA] bg-[#E7F0F7] space-y-3";
-    iconCircle.className = "w-10 h-10 rounded-full flex items-center justify-center font-bold bg-[#5B8FB9] text-white shadow-sm";
-    iconCircle.innerHTML = '<i data-lucide="help-circle" class="w-5 h-5"></i>';
-    confPill.className = "text-xs font-bold px-3 py-1 rounded-full bg-white text-[#5B8FB9] shadow-xs";
-    title.className = "text-2xl font-bold leading-tight text-[#5B8FB9]";
+    card.className = "card-lg p-6 border border-[#0A1C16]/12 bg-[#FAF8F5] space-y-3";
+    iconCircle.className = "w-12 h-12 rounded-full flex items-center justify-center font-bold bg-[#5B8FB9] text-white shadow-sm";
+    iconCircle.innerHTML = '<i data-lucide="help-circle" class="w-6 h-6"></i>';
+    confPill.className = "text-xs font-bold px-3.5 py-1 rounded-full bg-white text-[#5B8FB9] shadow-xs";
+    title.className = "font-serif text-3xl font-bold leading-tight text-[#5B8FB9]";
     title.innerText = currentLang === 'mr' ? 'सांगता येत नाही' : (currentLang === 'hi' ? 'कहा नहीं जा सकता' : "Can't Tell");
     sub.innerText = data.summary;
   }
